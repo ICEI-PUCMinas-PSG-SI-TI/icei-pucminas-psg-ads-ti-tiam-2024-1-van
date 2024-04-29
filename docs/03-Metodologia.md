@@ -1,8 +1,6 @@
 
 # Metodologia
 
-<span style="color:red">Pré-requisitos: <a href="2-Especificação do Projeto.md"> Documentação de Especificação</a></span>
-
 Tecnologias:
 
 - Desenvolvimento Front-end: React Native para criar interfaces de usuário multiplataforma.
