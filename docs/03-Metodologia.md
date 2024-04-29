@@ -3,7 +3,23 @@
 
 <span style="color:red">Pré-requisitos: <a href="2-Especificação do Projeto.md"> Documentação de Especificação</a></span>
 
-Descreva aqui a metodologia de trabalho do grupo para atacar o problema. Definições sobre os ambiente de trabalho utilizados pela  equipe para desenvolver o projeto. Abrange a relação de ambientes utilizados, a estrutura para gestão do código fonte, além da definição do processo e ferramenta através dos quais a equipe se organiza (Gestão de Times).
+Tecnologias:
+
+- Desenvolvimento Front-end: React Native para criar interfaces de usuário multiplataforma.
+- Desenvolvimento Back-end: Node.js para criar uma API que lide com a autenticação de usuários, armazenamento de dados e comunicação com o aplicativo móvel.
+- Banco de Dados: Firebase para armazenar informações de usuários e logs de viagem.
+- Rastreamento GPS: Integre serviços de rastreamento GPS, como o Google Maps API, para acompanhar a localização das vans em tempo real.
+- Validação de usuário: Utilize técnicas de autenticação, como JWT (JSON Web Tokens), para garantir a segurança e a validade das informações dos usuários.
+
+Ferramentas:
+
+- Linguagens de programação: Javascript
+
+Controle de Versão:
+- Utilização de sistemas de controle de versão como Git, com plataformas como GitHub ou GitLab para hospedar repositórios e facilitar a colaboração entre os membros da equipe.
+
+Gerenciamento de Projeto:
+- Ferramentas de gerenciamento de projeto como Trello, Asana ou Jira para planejamento, atribuição de tarefas e acompanhamento do progresso.
 
 ## Relação de Ambientes de Trabalho
 
