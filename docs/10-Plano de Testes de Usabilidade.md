@@ -1,11 +1,31 @@
 # Plano de Testes de Usabilidade
 
-O teste de usabilidade permite avaliar a qualidade da interface com o usuário da aplicação interativa. O Plano de Testes de Software é gerado a partir da especificação do sistema e consiste em casos de testes que deverão ser executados quando a implementação estiver parcial ou totalmente pronta.
+Navegação do Aplicativo:
 
-As referências abaixo irão auxiliá-lo na geração do artefato "Plano de Testes de Usabilidade".
+- Avaliar a facilidade de navegação do aplicativo para estudantes, motoristas e administradores.
+- Testar a intuitividade do layout e da organização das informações.
 
-> **Links Úteis**:
-> - [Teste De Usabilidade: O Que É e Como Fazer Passo a Passo (neilpatel.com)](https://neilpatel.com/br/blog/teste-de-usabilidade/)
-> - [Teste de usabilidade: tudo o que você precisa saber! | by Jon Vieira | Aela.io | Medium](https://medium.com/aela/teste-de-usabilidade-o-que-voc%C3%AA-precisa-saber-39a36343d9a6/)
-> - [Planejando testes de usabilidade: o que (e o que não) fazer | iMasters](https://imasters.com.br/design-ux/planejando-testes-de-usabilidade-o-que-e-o-que-nao-fazer/)
-> - [Ferramentas de Testes de Usabilidade](https://www.usability.gov/how-to-and-tools/resources/templates.html)
+Usabilidade da Interface do Usuário:
+
+- Avaliar a facilidade de uso de elementos como botões, menus, campos de entrada, etc.
+- Testar a clareza das instruções e mensagens apresentadas aos usuários durante o uso do aplicativo.
+
+Acessibilidade:
+
+- Verificar se o aplicativo é acessível para usuários com deficiências visuais, motoras ou auditivas.
+- Testar a compatibilidade com leitores de tela e outras tecnologias assistivas.
+
+Testes de Desempenho:
+
+- Avaliar o tempo de resposta do aplicativo em diferentes situações de uso.
+- Testar a estabilidade do aplicativo sob carga, simulando múltiplos usuários acessando simultaneamente.
+
+Feedback dos Usuários:
+
+- Coletar feedback dos usuários por meio de testes de usabilidade e questionários.
+- Incorporar sugestões e correções com base no feedback recebido.
+
+Ambiente de Testes:
+
+- Utilizar um ambiente de testes separado do ambiente de produção para evitar impactos nos usuários reais.
+- Simular diferentes cenários de uso, incluindo picos de demanda e situações adversas.
