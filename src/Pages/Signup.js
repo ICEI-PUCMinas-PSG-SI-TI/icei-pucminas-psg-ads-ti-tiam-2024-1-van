@@ -2,7 +2,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { View, TextInput, Button, Alert, Text, StyleSheet } from "react-native";
 import { auth, db } from "../Database/firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore"; 
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -10,31 +10,30 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
-  const handleSignup = async() => {
+  const handleSignup = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed up
         const user = userCredential.user;
-        console.log(user);
-        setUser(user);
+  
+        // Add a new document in collection "users"
+        setDoc(doc(db, "users", user.uid), {
+          displayName: name,
+          phoneNumber: phone,
+          uid: user.uid,
+        })
+        .then(() => {
+          console.log("User information saved!");
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorMessage)
       });
-
-      try {
-        const docRef = await addDoc(collection(db, "user"), {
-          name: name,
-          email: email,
-          password: password,
-          phone: phone
-        });
-        console.log("Document written with ID: ", docRef.id);
-      } catch (e) {
-        console.error("Error adding document: ", e);
-      }
   };
 
   return (
