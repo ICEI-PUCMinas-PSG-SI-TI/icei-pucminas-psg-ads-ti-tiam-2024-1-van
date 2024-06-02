@@ -2,7 +2,8 @@ import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { LoginScreen, Signup, WelcomeScreen, HomeAluno } from "./Pages";
+import { LoginScreen, Signup, WelcomeScreen, HomeAluno, ForgotPasswordScreen, EmailConfirmationScreen } from "./Pages";
+import { FlatList } from "react-native-gesture-handler";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,10 +34,33 @@ export default function App() {
             />
           
           <Stack.Screen
+            name="ForgotPasswordScreen"
+            component={ForgotPasswordScreen}
+            options={{
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+              headerBackTitleVisible: false, 
+              headerTintColor: '#000',
+            }}
+          />
+
+          <Stack.Screen
+            name="EmailConfirmationScreen"
+            component={EmailConfirmationScreen}
+            options={{
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+              headerBackTitleVisible: false, 
+              headerTintColor: '#000',
+            }}
+          />
+          <Stack.Screen
             name="HomeAluno"
             component={HomeAluno}
             options={{ 
-              headerShown: false }}
+              headerShown: true }}
             />
 
         </Stack.Navigator>

@@ -86,7 +86,11 @@ const LoginScreen = ({ route, navigation }) => {
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Entrar</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ForgotPasswordScreen', { userType: userType })}
+          >
         <Text style={styles.forgotPasswordText}>Esqueci a senha</Text>
+          </TouchableOpacity>
         <View style={styles.orContainer}>
           <Text style={styles.orText}>Ou</Text>
         </View>
