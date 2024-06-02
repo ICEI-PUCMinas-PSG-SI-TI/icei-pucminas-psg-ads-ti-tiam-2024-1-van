@@ -31,6 +31,13 @@ export default function App() {
           <Stack.Screen
             name="Signup"
             component={Signup}
+            options={{
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+              headerBackTitleVisible: false, 
+              headerTintColor: '#000', 
+            }}
             />
           
           <Stack.Screen
@@ -60,7 +67,10 @@ export default function App() {
             name="HomeAluno"
             component={HomeAluno}
             options={{ 
-              headerShown: true }}
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+               }}
             />
 
         </Stack.Navigator>

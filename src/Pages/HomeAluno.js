@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { firestore } from '../Database/firebaseConfig'; 
+import { firestore } from '../Database/firebaseConfig';
 import profilealuno from '../img/profilealuno.png';
 import mapsvan from '../img/mapsvan.png';
 
@@ -39,106 +39,114 @@ const HomeAluno = ({ route, navigation }) => {
     }
     console.log(`Atualização de status: ${type} - ${status}`);
   };
-
   //if (!estudante || !van || !motorista) {
   //  return <Text>Carregando...</Text>;
- // }
+  // }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-      {/* <Image source={profilealuno} style={styles.profilePic} />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
+          {/* <Image source={profilealuno} style={styles.profilePic} />
         <Text style={styles.greeting}>Olá, {estudante.Nome}</Text>
         <Text style={styles.vanInfo}>Passageiro da Van: {van.ID_Van}</Text>
-        <Text style={styles.vanInfo}>Motorista: {motorista.Nome}</Text>*/}  
-   
-   <Image source={profilealuno} style={styles.profilePic} />
-        <Text style={styles.greeting}>Olá, Ronielson</Text>
-        <Text style={styles.vanInfo}>Passageiro da Van: SLH2008</Text>
-        <Text style={styles.vanInfo}>Motorista: Fernando</Text>
-      
-      </View>
-      
-      <TouchableOpacity style={styles.mapContainer} onPress={() => navigation.navigate('Mapa')}>
-        <Image source={mapsvan} style={styles.map} />
-      </TouchableOpacity>
+        <Text style={styles.vanInfo}>Motorista: {motorista.Nome}</Text>*/}
 
-      <View style={styles.statusContainer}>
-        <Text style={styles.statusTitle}>Atualize sua situação</Text>
-        
-        <View style={styles.statusButtons}>
-          <Text style={styles.statusType}>Situação da ida</Text>
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                statusIda === 'confirmado' && styles.selectedButton
-              ]}
-              onPress={() => handleStatusUpdate('ida', 'confirmado')}
-            >
-              <Text style={styles.buttonText}>✓</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                statusIda === 'naovai' && styles.selectedButton
-              ]}
-              onPress={() => handleStatusUpdate('ida', 'naovai')}
-            >
-              <Text style={styles.buttonText}>✗</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                statusIda === 'atrasado' && styles.selectedButton
-              ]}
-              onPress={() => handleStatusUpdate('ida', 'atrasado')}
-            >
-              <Text style={styles.buttonText}>✋</Text>
-            </TouchableOpacity>
+
+          <View style={styles.textContainer}>
+            <Text style={styles.greeting}>Olá, Ronielson</Text>
+            <Text style={styles.vanInfo}>Passageiro da Van: SLH2008</Text>
+            <Text style={styles.vanInfo}>Motorista: Fernando</Text>
+            <View style={styles.separatorLine} />
+          </View>
+          <Image source={profilealuno} style={styles.profilePic} />
+        </View>
+
+        <TouchableOpacity style={styles.mapContainer} onPress={() => navigation.navigate('Mapa')}>
+          <Image source={mapsvan} style={styles.map} />
+        </TouchableOpacity>
+
+        <View style={styles.statusContainer}>
+          <Text style={styles.statusTitle}>Atualize sua situação</Text>
+          <View style={styles.buttonContainer1}>
+            <View style={styles.statusButtons}>
+              <Text style={styles.statusType}>Situação da ida</Text>
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    statusIda === 'confirmado' && styles.selectedButton
+                  ]}
+                  onPress={() => handleStatusUpdate('ida', 'confirmado')}
+                >
+                  <Text style={styles.buttonText}>✅</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    statusIda === 'naovai' && styles.selectedButton
+                  ]}
+                  onPress={() => handleStatusUpdate('ida', 'naovai')}
+                >
+                  <Text style={styles.buttonText}>❌</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.button,
+                    statusIda === 'atrasado' && styles.selectedButton
+                  ]}
+                  onPress={() => handleStatusUpdate('ida', 'atrasado')}
+                >
+                  <Text style={styles.buttonText}>✋</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
 
-          <Text style={styles.statusType}>Situação da volta</Text>
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                statusVolta === 'confirmado' && styles.selectedButton
-              ]}
-              onPress={() => handleStatusUpdate('volta', 'confirmado')}
-            >
-              <Text style={styles.buttonText}>✓</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                statusVolta === 'naovolta' && styles.selectedButton
-              ]}
-              onPress={() => handleStatusUpdate('volta', 'naovolta')}
-            >
-              <Text style={styles.buttonText}>✗</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                statusVolta === 'atrasadovolta' && styles.selectedButton
-              ]}
-              onPress={() => handleStatusUpdate('volta', 'atrasadovolta')}
-            >
-              <Text style={styles.buttonText}>✋</Text>
-            </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <Text style={styles.statusType}>Situação da volta</Text>
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  statusVolta === 'confirmado' && styles.selectedButton
+                ]}
+                onPress={() => handleStatusUpdate('volta', 'confirmado')}
+              >
+                <Text style={styles.buttonText}>✅</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  statusVolta === 'naovolta' && styles.selectedButton
+                ]}
+                onPress={() => handleStatusUpdate('volta', 'naovolta')}
+              >
+                <Text style={styles.buttonText}>❌</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  statusVolta === 'atrasadovolta' && styles.selectedButton
+                ]}
+                onPress={() => handleStatusUpdate('volta', 'atrasadovolta')}
+              >
+                <Text style={styles.buttonText}>✋</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+
+      </ScrollView>
 
       <View style={styles.tabBar}>
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('HomeAluno')}>
           <Icon name="home" size={24} color="#000" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Location')}>
+        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('LocationScreen')}>
           <Icon name="map-pin" size={24} color="#000" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('Settings')}>
+        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('SettingsScreen')}>
           <Icon name="cog" size={24} color="#000" />
         </TouchableOpacity>
       </View>
@@ -149,58 +157,95 @@ const HomeAluno = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
     backgroundColor: '#fff',
   },
+  scrollContainer: {
+    paddingBottom: 60,
+  },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
   },
+  textContainer: {
+    flex: 1,
+    marginLeft: 15,
+  },
   profilePic: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    borderColor: '#FFDE59',
+    borderWidth: 5,
+    marginRight: 5,
   },
   greeting: {
-    fontSize: 24,
+    fontSize: 50,
     fontWeight: 'bold',
     marginTop: 10,
+    color: 'rgba(34, 0, 0, 0.533333)',
   },
   vanInfo: {
-    fontSize: 16,
-    color: '#777',
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#595D60',
+  },
+  separatorLine: {
+    height: 1,
+    backgroundColor: "#595D60",
+    marginVertical: 10,
   },
   mapContainer: {
     marginBottom: 20,
     alignItems: 'center',
+    width: '100%',
   },
   map: {
-    width: 300,
+    width: '90%',
     height: 200,
     borderRadius: 15,
+    borderColor: '#FFDE59',
+    borderWidth: 2,
   },
   statusContainer: {
-    paddingBottom: 5,
+    paddingHorizontal: 10,
+    paddingBottom: 60,
   },
   statusTitle: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
+    color: '#595D60',
   },
   statusButtons: {
-    marginBottom: 5,
+    marginBottom: 20,
   },
   statusType: {
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: 'bold',
     marginVertical: 10,
     textAlign: 'center',
+    color: '#595D60',
+  },
+  buttonContainer1: {
+    borderRadius: 15,
+    borderColor: '#595D60',
+    borderWidth: 2,
+    marginBottom: '24px',
+  },
+
+  buttonContainer: {
+    borderRadius: 15,
+    borderColor: '#595D60',
+    borderWidth: 2,
+
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 5,
+    marginBottom: 20,
   },
   button: {
     width: 50,
@@ -212,8 +257,8 @@ const styles = StyleSheet.create({
   },
   selectedButton: {
     backgroundColor: '#ddd',
-    borderWidth: 2,
-    borderColor: '#000',
+    borderWidth: 5,
+    borderColor: '#FFDE59',
   },
   buttonText: {
     fontSize: 24,
