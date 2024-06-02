@@ -62,7 +62,7 @@ const HomeAluno = ({ route, navigation }) => {
           <Image source={profilealuno} style={styles.profilePic} />
         </View>
 
-        <TouchableOpacity style={styles.mapContainer} onPress={() => navigation.navigate('Mapa')}>
+        <TouchableOpacity style={styles.mapContainer} onPress={() => navigation.navigate('LocationScreen')}>
           <Image source={mapsvan} style={styles.map} />
         </TouchableOpacity>
 
@@ -140,16 +140,18 @@ const HomeAluno = ({ route, navigation }) => {
       </ScrollView>
 
       <View style={styles.tabBar}>
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('HomeAluno')}>
+      <TouchableOpacity style={styles.tabBar} onPress={() => navigation.navigate('HomeAluno')}>
+        <View style={styles.highlightBackground}>
           <Icon name="home" size={24} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('LocationScreen')}>
-          <Icon name="map-pin" size={24} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('SettingsScreen')}>
-          <Icon name="cog" size={24} color="#000" />
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('LocationScreen')}>
+        <Icon name="map-pin" size={24} color="#000" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('EditScreen')}>
+        <Icon name="cog" size={24} color="#000" />
+      </TouchableOpacity>
+    </View>
     </View>
   );
 };
@@ -235,12 +237,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     marginBottom: '24px',
   },
-
   buttonContainer: {
     borderRadius: 15,
     borderColor: '#595D60',
     borderWidth: 2,
-
   },
   buttonRow: {
     flexDirection: 'row',
@@ -286,6 +286,32 @@ const styles = StyleSheet.create({
   tabButton: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  highlightedTabButton: {
+     position: 'absolute',
+    width: 85,
+    height: 70,
+    top: -5, 
+    backgroundColor: '#D9D9D9',
+   
+  },
+  highlightBackground: {
+    position: 'absolute',
+    top: -10,
+    width: 80,
+    height: 80,
+    backgroundColor: '#D9D9D9',
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 

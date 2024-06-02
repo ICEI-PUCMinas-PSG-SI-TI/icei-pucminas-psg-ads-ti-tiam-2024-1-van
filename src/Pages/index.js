@@ -17,5 +17,5 @@ export {
   HomeAluno,
   SettingsScreen,
   LocationScreen,
-  EditScreen
+  EditScreen,
 }
