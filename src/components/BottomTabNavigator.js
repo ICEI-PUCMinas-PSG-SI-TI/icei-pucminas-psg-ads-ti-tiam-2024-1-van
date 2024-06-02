@@ -1,10 +1,10 @@
 // components/BottomTabNavigator.js
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/HomeScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import LocationScreen from '../screens/LocationScreen';
-import EditScreen from '../screens/EditScreen';
+import HomeAluno from '../Pages/HomeAluno';
+import SettingsScreen from '../Pages/SettingsScreen';
+import LocationScreen from '../Pages/LocationScreen';
+import EditScreen from '../Pages/EditScreen';
 import { MaterialIcons, FontAwesome, Feather } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
@@ -36,7 +36,7 @@ const BottomTabNavigator = () => {
     >
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={HomeAluno}
         options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="home" color={color} size={size} />

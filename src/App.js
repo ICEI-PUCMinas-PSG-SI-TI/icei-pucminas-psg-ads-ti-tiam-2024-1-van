@@ -1,9 +1,8 @@
 import React from "react";
-import { SafeAreaProvider   } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { LoginScreen, Signup, WelcomeScreen } from "./Pages/index";
-
+import { LoginScreen, Signup, WelcomeScreen, HomeAluno } from "./Pages";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +31,14 @@ export default function App() {
             name="Signup"
             component={Signup}
             />
+          
+          <Stack.Screen
+            name="HomeAluno"
+            component={HomeAluno}
+            options={{ 
+              headerShown: false }}
+            />
+
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
