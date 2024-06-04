@@ -14,7 +14,7 @@ export default function App() {
         <Stack.Navigator initialRouteName="Welcome">
           <Stack.Screen
             name="Welcome"
-            component={LocationScreen}
+            component={WelcomeScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
