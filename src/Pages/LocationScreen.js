@@ -1,85 +1,80 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { View, Text, StyleSheet, Platform } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 const LocationScreen = ({ navigation }) => {
+  const [location, setLocation] = useState(null);
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permissão de localização negada');
+        return;
+      }
 
-    return (
+      Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.High,
+          timeInterval: 5000, // Atualizar a cada 5 segundos
+          distanceInterval: 0,
+        },
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLocation({ latitude, longitude });
 
-        <View style={styles.tabBar}>
-            <TouchableOpacity style={styles.tabBar} onPress={() => navigation.navigate('HomeAluno')}>
-                <Icon name="home" size={24} color="#000" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.highlightedTabButton} onPress={() => navigation.navigate('LocationScreen')}>
-                <View style={styles.highlightBackground}>
-                    <Icon name="map-pin" size={24} color="#000" />
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('EditScreen')}>
-                <Icon name="cog" size={24} color="#000" />
-            </TouchableOpacity>
-        </View>
-    );
+          const userId = auth().currentUser.uid;
+          firestore().collection('motoristas').doc(userId).set(
+            {
+              location: new firestore.GeoPoint(latitude, longitude),
+            },
+            { merge: true }
+          );
+        }
+      );
+    })();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Compartilhar Localização em Tempo Real</Text>
+      {location ? (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
+          }}
+        >
+          <Marker coordinate={location} />
+        </MapView>
+      ) : (
+        <Text>Obtendo localização...</Text>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        justifyContent: 'flex-end',
-    },
-    tabBar: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        height: 59,
-        backgroundColor: '#D9D9D9',
-        borderTopColor: 'transparent',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        paddingVertical: 10,
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-    },
-    tabButton: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    highlightedTabButton: {
-        width: 85,
-        height: 70,
-        top: -5,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 35,
-        shadowColor: 'rgba(0, 0, 0, 0.25)',
-        shadowOffset: { width: 0, height: 2},
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 2,
-    },
-    highlightBackground: {
-        top: -10,
-        width: 85,
-        height: 85,
-        backgroundColor: '#D9D9D9',
-        borderRadius: 40,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+  },
+  map: {
+    width: '100%',
+    height: '80%',
+  },
 });
 
 export default LocationScreen;

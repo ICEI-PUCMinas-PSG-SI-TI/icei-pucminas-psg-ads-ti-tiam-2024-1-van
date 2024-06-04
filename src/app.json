@@ -4,10 +4,10 @@
     "slug": "src",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/van.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/van_animation.gif",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
