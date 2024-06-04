@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Platform, ActivityIndicator } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import Icon from 'react-native-vector-icons/Feather';
 
 const LocationScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [sharing, setSharing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [watcher, setWatcher] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -16,38 +17,57 @@ const LocationScreen = ({ navigation }) => {
         console.log('Permissão de localização negada');
         return;
       }
-
-      Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 5000, // Atualizar a cada 5 segundos
-          distanceInterval: 0,
-        },
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLocation({ latitude, longitude });
-          setLoading(false); // Parar o carregamento quando a localização é obtida
-
-          const userId = auth().currentUser.uid;
-          firestore().collection('motoristas').doc(userId).set(
-            {
-              location: new firestore.GeoPoint(latitude, longitude),
-            },
-            { merge: true }
-          );
-        }
-      );
     })();
+
+    return () => {
+      stopSharingLocation();
+    };
   }, []);
+
+  const startSharingLocation = async () => {
+    setLoading(true);
+    const locationWatcher = await Location.watchPositionAsync(
+      {
+        accuracy: Location.Accuracy.High,
+        timeInterval: 5000, // Atualizar a cada 5 segundos
+        distanceInterval: 0,
+      },
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocation({ latitude, longitude });
+        setLoading(false); // Parar o carregamento quando a localização é obtida
+      }
+    );
+    setWatcher(locationWatcher);
+    setSharing(true);
+  };
+
+  const stopSharingLocation = () => {
+    if (watcher) {
+      watcher.remove();
+    }
+    setWatcher(null);
+    setSharing(false);
+    setLocation(null); // Remover a localização para que o mapa desapareça
+  };
+
+  const toggleSharing = () => {
+    if (sharing) {
+      stopSharingLocation();
+    } else {
+      startSharingLocation();
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Compartilhar Localização em Tempo Real</Text>
+      <Text style={styles.title}>Mapa em tempo real - Motorista</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        location && (
+        sharing && location && (
           <MapView
+            provider={PROVIDER_GOOGLE}
             style={styles.map}
             initialRegion={{
               latitude: location.latitude,
@@ -56,10 +76,19 @@ const LocationScreen = ({ navigation }) => {
               longitudeDelta: 0.005,
             }}
           >
-            <Marker coordinate={location} />
+            <Marker coordinate={location}>
+              <View style={styles.marker}>
+                <Icon name="user" size={20} color="#FFF" />
+              </View>
+            </Marker>
           </MapView>
         )
       )}
+      <TouchableOpacity style={styles.toggleButton} onPress={toggleSharing}>
+        <Text style={styles.toggleButtonText}>
+          {sharing ? 'Parar Compartilhamento' : 'Iniciar Compartilhamento'}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -78,6 +107,24 @@ const styles = StyleSheet.create({
   map: {
     width: '100%',
     height: '80%',
+  },
+  marker: {
+    backgroundColor: '#FF0000',
+    padding: 5,
+    borderRadius: 10,
+    borderColor: '#FFF',
+    borderWidth: 2,
+  },
+  toggleButton: {
+    position: 'absolute',
+    bottom: 20,
+    backgroundColor: '#FFDE59',
+    padding: 10,
+    borderRadius: 5,
+  },
+  toggleButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
   },
 });
 

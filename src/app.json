@@ -23,6 +23,11 @@
         "backgroundColor": "#ffffff"
       }
     },
+    "config": {
+      "googleMaps": {
+        "apiKey": "AIzaSyCGWzpP_QowNk0HZufH_hxmLcZcS1QqWu4"
+      }
+    },
     "web": {
       "favicon": "./assets/van.jpg"
     }
