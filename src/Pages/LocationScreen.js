@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { View, Text, StyleSheet, Platform, ActivityIndicator } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import auth from '@react-native-firebase/auth';
@@ -7,6 +7,7 @@ import firestore from '@react-native-firebase/firestore';
 
 const LocationScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -25,6 +26,7 @@ const LocationScreen = ({ navigation }) => {
         (position) => {
           const { latitude, longitude } = position.coords;
           setLocation({ latitude, longitude });
+          setLoading(false); // Parar o carregamento quando a localização é obtida
 
           const userId = auth().currentUser.uid;
           firestore().collection('motoristas').doc(userId).set(
@@ -41,20 +43,22 @@ const LocationScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Compartilhar Localização em Tempo Real</Text>
-      {location ? (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          }}
-        >
-          <Marker coordinate={location} />
-        </MapView>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        <Text>Obtendo localização...</Text>
+        location && (
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: location.latitude,
+              longitude: location.longitude,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            }}
+          >
+            <Marker coordinate={location} />
+          </MapView>
+        )
       )}
     </View>
   );
