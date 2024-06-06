@@ -10,30 +10,26 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
-  const handleSignup = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed up
-        const user = userCredential.user;
-  
-        // Add a new document in collection "users"
-        setDoc(doc(db, "users", user.uid), {
-          displayName: name,
-          phoneNumber: phone,
-          uid: user.uid,
-        })
-        .then(() => {
-          console.log("User information saved!");
-        })
-        .catch((error) => {
-          console.error("Error writing document: ", error);
-        });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage)
+  const handleSignup = async () => { 
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        displayName: name,
+        phoneNumber: phone,
+        uid: user.uid, 
       });
+
+      console.log("User information saved!");
+      // Potentially navigate to another screen or show a success message
+    } catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.error("Error during signup:", errorMessage);
+      // Show an error alert to the user
+      Alert.alert("Erro", errorMessage);
+    }
   };
 
   return (

@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaProvider   } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { LoginScreen, Signup, WelcomeScreen } from "./Pages/index";
+import { LoginScreen, Signup, WelcomeScreen, EditProfile } from "./Pages/index";
 
 
 const Stack = createNativeStackNavigator();
@@ -31,6 +31,10 @@ export default function App() {
           <Stack.Screen
             name="Signup"
             component={Signup}
+            />
+          <Stack.Screen
+            name="Config"
+            component={EditProfile}
             />
         </Stack.Navigator>
       </NavigationContainer>

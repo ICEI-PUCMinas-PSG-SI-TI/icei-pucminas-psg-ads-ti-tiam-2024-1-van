@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
-import {getAuth} from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { initializeAuth, getReactNativePersistence, browserSessionPersistence, inMemoryPersistence } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyAA1pMaTwdPCywryeddMbuhX2ABu42wXGI",
@@ -15,6 +16,24 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-const analytics = getAnalytics(app);
+// Inicializar a autenticação com persistência condicional
+let auth;
+if (typeof window !== 'undefined' && window.localStorage) {
+  // Ambiente web: usar sessionStorage para persistir entre abas
+  auth = initializeAuth(app, {
+    persistence: browserSessionPersistence
+  });
+} else if (AsyncStorage) {
+  // Ambiente React Native: usar AsyncStorage
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage)
+  });
+} else {
+  // Outros ambientes: usar persistência em memória (não persiste entre sessões)
+  auth = initializeAuth(app, {
+    persistence: inMemoryPersistence
+  });
+}
+const db = getFirestore(app);
+
+export { auth, db };
