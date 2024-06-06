@@ -1,9 +1,9 @@
 import React from "react";
-import { SafeAreaProvider   } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { LoginScreen, Signup, WelcomeScreen, EditProfile } from "./Pages/index";
-
+import { LoginScreen, Signup, WelcomeScreen, HomeAluno, ForgotPasswordScreen, EmailConfirmationScreen, LocationScreen, SettingsScreen, EditScreen } from "./Pages";
+import { FlatList } from "react-native-gesture-handler";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,11 +31,75 @@ export default function App() {
           <Stack.Screen
             name="Signup"
             component={Signup}
+            options={{
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+              headerBackTitleVisible: false, 
+              headerTintColor: '#000', 
+            }}
+            />
+          
+          <Stack.Screen
+            name="ForgotPasswordScreen"
+            component={ForgotPasswordScreen}
+            options={{
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+              headerBackTitleVisible: false, 
+              headerTintColor: '#000',
+            }}
+          />
+
+          <Stack.Screen
+            name="EmailConfirmationScreen"
+            component={EmailConfirmationScreen}
+            options={{
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+              headerBackTitleVisible: false, 
+              headerTintColor: '#000',
+            }}
+          />
+          <Stack.Screen
+            name="HomeAluno"
+            component={HomeAluno}
+            options={{ 
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+               }}
             />
           <Stack.Screen
-            name="Config"
-            component={EditProfile}
+            name="SettingsScreen"
+            component={SettingsScreen}
+            options={{ 
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+               }}
             />
+          <Stack.Screen
+            name="LocationScreen"
+            component={LocationScreen}
+            options={{ 
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+               }}
+            />
+          <Stack.Screen
+            name="EditScreen"
+            component={EditScreen}
+            options={{ 
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+               }}
+            />
+
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

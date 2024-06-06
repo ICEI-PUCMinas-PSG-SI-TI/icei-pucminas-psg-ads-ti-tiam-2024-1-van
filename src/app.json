@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "src",
+    "slug": "src",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/van.jpg",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/van_animation.gif",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "config": {
+      "googleMaps": {
+        "apiKey": "AIzaSyCGWzpP_QowNk0HZufH_hxmLcZcS1QqWu4"
+      }
+    },
+    "web": {
+      "favicon": "./assets/van.jpg"
+    }
+  }
+}
