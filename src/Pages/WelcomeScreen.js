@@ -25,7 +25,7 @@ const WelcomeScreen = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Config', { userType: 'motorista' })}
+        onPress={() => navigation.navigate('EditProfile', { userType: 'motorista' })}
       >
         <Text style={styles.buttonText}>Editar Perfil Aluno</Text>
       </TouchableOpacity>

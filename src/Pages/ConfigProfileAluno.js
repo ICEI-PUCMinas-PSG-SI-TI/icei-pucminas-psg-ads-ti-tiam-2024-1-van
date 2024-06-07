@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, Platform, ScrollView  } from 'react-native';
 import { auth, db, storage } from '../Database/firebaseConfig'; // Adjust the path if needed
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     },
     // ... (outros estilos do header, imageContainer, etc., iguais ao exemplo anterior)
     formContainer: {
+        flex: 1,
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,

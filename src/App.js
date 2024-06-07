@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { LoginScreen, Signup, WelcomeScreen, HomeAluno, ForgotPasswordScreen, EmailConfirmationScreen, LocationScreen, SettingsScreen, EditScreen } from "./Pages";
+import { LoginScreen, Signup, WelcomeScreen, HomeAluno, ForgotPasswordScreen, EmailConfirmationScreen, LocationScreen, SettingsScreen, EditScreen,EditProfile } from "./Pages";
 import { FlatList } from "react-native-gesture-handler";
 
 const Stack = createNativeStackNavigator();
@@ -93,6 +93,15 @@ export default function App() {
           <Stack.Screen
             name="EditScreen"
             component={EditScreen}
+            options={{ 
+              headerShown: true,
+              headerTransparent: true, 
+              headerTitle: '', 
+               }}
+            />
+            <Stack.Screen
+            name="EditProfile"
+            component={EditProfile}
             options={{ 
               headerShown: true,
               headerTransparent: true, 

@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'black',
     textAlign: 'center',
-    fontSize: '13px',
+    fontSize: 13,
     fontWeight: 'bold',
   },
   forgotPasswordText: {
