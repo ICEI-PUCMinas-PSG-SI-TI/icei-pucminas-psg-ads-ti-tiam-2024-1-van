@@ -103,10 +103,10 @@ const EditProfile = () => {
 
   return (
     <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header */}
         <View style={styles.header}>
             <TouchableOpacity onPress={() => { /* Handle back navigation */ }}>
-                <Icon name="arrow-left" size={24} color="#000" />
             </TouchableOpacity>
             <Text style={styles.headerText}>Editar Perfil</Text>
         </View>
@@ -117,7 +117,7 @@ const EditProfile = () => {
             <View style={styles.imageContainer}>
                 <Image source={{ uri: image }} style={styles.profileImage} />
                 <TouchableOpacity style={styles.editImageButton} onPress={pickImage}>
-                    <Text style={styles.editImageText}>Editar</Text>
+                    <Icon name="camera" size={20} color="#FFDE59" />
                 </TouchableOpacity>
             </View>
 
@@ -129,12 +129,12 @@ const EditProfile = () => {
             <Input label="Turno" value={turno} onChangeText={setTurno} />
             <Input label="Frequência" value={frequencia} onChangeText={setFrequencia} />
             <Input label="Endereço" value={endereco} onChangeText={setEndereco} />
-
             {/* Save Button */}
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                 <Text style={styles.saveButtonText}>Salvar alterações</Text>
             </TouchableOpacity>
         </View>
+</ScrollView>
     </View>
 );
 };
@@ -153,30 +153,44 @@ const Input = ({ label, value, onChangeText, editable = true }) => (
 
 // Styles
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#F2F2F2', 
-    },
-    imageContainer: {
-        alignItems: 'center',
-        marginBottom: 20,
-    },
-    profileImage: {
-        width: 150,
-        height: 150,
-        borderRadius: 75, // Metade da largura e altura para criar um círculo perfeito
-        marginBottom: 10,
-        overflow: 'hidden', // Garante que a imagem não ultrapasse o círculo
-    },
-    profileImageBorder: { // Novo estilo para a borda
-        borderWidth: 3,
-        borderColor: '#007BFF',
-        borderRadius: 81, // Ajuste para acomodar a borda
-    },
-    // ... (outros estilos do header, imageContainer, etc., iguais ao exemplo anterior)
-    formContainer: {
-        flex: 1,
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+ header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 45,
+    backgroundColor: '#fff',
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+    position: 'relative',
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 100, // Metade da largura e altura para criar um círculo perfeito
+    marginBottom: 10,
+    borderColor: '#FFDE59',
+    borderWidth: 2,
+    overflow: 'hidden', // Garante que a imagem não ultrapasse o círculo
+  },
+  editImageButton: {
+    position: 'absolute',
+    bottom: -10, 
+    right: 100, 
+    padding: 5,
+  },
+   // ... (outros estilos do header, imageContainer, etc., iguais ao exemplo anterior)
+   formContainer: {
+    flex: 1,
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
@@ -185,28 +199,39 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 2,
         elevation: 2, // Sombra para Android
-    },
-    inputContainer: {
-        marginBottom: 15,
-    },
-    label: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 5,
-        color: '#333', // Cor do texto mais escura
-    },
-    input: {
-        height: 40,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        paddingHorizontal: 10,
-        borderRadius: 5,
-        backgroundColor: '#fff', // Fundo branco para os inputs
-    },
-    disabledInput: {
-        backgroundColor: '#f0f0f0', // Fundo cinza claro para inputs desabilitados
-    },
-    // ... (estilos do saveButton e saveButtonText) 
+  },
+  inputContainer: {
+    marginBottom: 15,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#333', // Cor do texto mais escura
+  },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: '#fff', // Fundo branco para os inputs
+  },
+  disabledInput: {
+    backgroundColor: '#f0f0f0', // Fundo cinza claro para inputs desabilitados
+  },
+  // ... (estilos do saveButton e saveButtonText) 
+  saveButton: {
+    backgroundColor: '#FFDE59',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  saveButtonText: {
+    fontSize: 16,
+    color: '#000',
+  },
 });
 
 export default EditProfile;

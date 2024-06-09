@@ -43,9 +43,32 @@ const HomeAluno = ({ route, navigation }) => {
   //  return <Text>Carregando...</Text>;
   // }
 
+  const handleLogout = () => {
+    console.log('Iniciar processo de logout');
+      navigation.navigate('Welcome');
+
+    //try {
+     // await auth().signOut();
+    //  console.log("Logout realizado");
+    //  navigation.replace('Welcome'); // Navegar para a tela de login após logout
+  //  } catch (error) {
+   //   console.error("Erro ao fazer logout: ", error);
+  //  }
+  };
+
+
   return (
     <View style={styles.container}>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View>  
+          <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('Welcome')}>
+            <Icon name="sign-out" size={0} color="rgba(34, 0, 0, 0.533333)" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Icon name="sign-out" size={30} color="rgba(34, 0, 0, 0.533333)" />
+          </TouchableOpacity>
+          </View>
         <View style={styles.header}>
           {/* <Image source={profilealuno} style={styles.profilePic} />
         <Text style={styles.greeting}>Olá, {estudante.Nome}</Text>
@@ -140,15 +163,15 @@ const HomeAluno = ({ route, navigation }) => {
       </ScrollView>
 
       <View style={styles.tabBar}>
-      <TouchableOpacity style={styles.tabBar} onPress={() => navigation.navigate('HomeAluno')}>
-        <View style={styles.highlightBackground}>
-          <Icon name="home" size={24} color="#000" />
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('LocationScreen')}>
+        <View style={styles.tabButton}>
+          <Icon name="map-pin" size={24} color="#000" />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('LocationScreen')}>
-        <Icon name="map-pin" size={24} color="#000" />
+      <TouchableOpacity style={styles.highlightedTabButton} onPress={() => navigation.navigate('HomeAluno')}>
+        <Icon name="home" size={24} color="#000" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('EditScreen')}>
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('EditProfile')}>
         <Icon name="cog" size={24} color="#000" />
       </TouchableOpacity>
     </View>
@@ -160,6 +183,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  logoutButton: {
+    padding: 10,
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    marginTop: 20,
   },
   scrollContainer: {
     paddingBottom: 60,
@@ -235,7 +264,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderColor: '#595D60',
     borderWidth: 2,
-    marginBottom: '24px',
+    marginBottom: 24,
   },
   buttonContainer: {
     borderRadius: 15,
@@ -288,16 +317,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   highlightedTabButton: {
-     position: 'absolute',
     width: 85,
     height: 70,
-    top: -5, 
+    top: -15,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#D9D9D9',
-   
+    borderRadius: 35,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   highlightBackground: {
-    position: 'absolute',
-    top: -10,
     width: 80,
     height: 80,
     backgroundColor: '#D9D9D9',
@@ -314,5 +350,6 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 });
+
 
 export default HomeAluno;

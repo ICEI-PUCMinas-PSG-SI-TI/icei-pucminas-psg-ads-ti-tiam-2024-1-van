@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaProvider   } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { SettingsScreen, LocationScreen, EmailConfirmationScreen, ForgotPasswordScreen, HomeAluno, LoginScreen, Signup, WelcomeScreen, EditScreen } from "../Pages/index";
+import { SettingsScreen, LocationScreen, EmailConfirmationScreen, ForgotPasswordScreen, HomeAluno, LoginScreen, Signup, WelcomeScreen, EditScreen, ConfigProfileAluno } from "../Pages/index";
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +23,7 @@ export default function App(){
         <Stack.Screen name="LocationScreen" component={LocationScreen}/>
         <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
         <Stack.Screen name="EditScreen" component={EditScreen}/>
+        <Stack.Screen name="EditProfile" component={ConfigProfileAluno}/>
       </Stack.Navigator>
       </NavigationContainer>
   </SafeAreaProvider >

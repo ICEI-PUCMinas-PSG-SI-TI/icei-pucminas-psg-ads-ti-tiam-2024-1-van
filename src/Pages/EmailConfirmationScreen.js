@@ -5,7 +5,7 @@ const EmailConfirmationScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.message}>Logo mais você receberá as informações no seu e-mail para a recuperação da sua conta do VanComigo!</Text>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login', { userType: 'aluno' })}>
         <Text style={styles.buttonText}>Voltar para o Login</Text>
       </TouchableOpacity>
     </View>
