@@ -1,34 +1,84 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { firestore } from '../Database/firebaseConfig';
-import profilealuno from '../img/profilealuno.png';
+import { auth } from '../Database/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../Database/firebaseConfig'; 
+import unnamed from '../img/unnamed.png';
 import mapsvan from '../img/mapsvan.png';
+import { signOut } from 'firebase/auth'; 
 
 const HomeAluno = ({ route, navigation }) => {
-  const [estudante, setEstudante] = useState("");
-  const [van, setVan] = useState("");
-  const [motorista, setMotorista] = useState("");
+  const { studentData } = route.params;
+  const [estudante, setEstudante] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [statusIda, setStatusIda] = useState("");
   const [statusVolta, setStatusVolta] = useState("");
 
+
+  // Por enquanto não está sendo usado!!
+  const fetchData = async () => {
+    if (!studentData) return; 
+  
+    try {
+      // Busca os dados do aluno (incluindo van e motorista) da coleção "users"
+      const userDocRef = doc(firestore, 'users', studentData.uid);
+      const userDocSnap = await getDoc(userDocRef);
+  
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        setEstudante(userData);
+  
+        // Define os dados da van e do motorista diretamente do userData
+        setVan({
+          ID_Van: userData.vanID, // Use o campo vanID que você adicionou
+          Nome: userData.vanNome, // Use o campo vanNome que você adicionou
+        });
+        setMotorista({
+          Nome: userData.motoristaNome, // Use o campo motoristaNome que você adicionou
+        });
+      } else {
+        console.warn("Documento do usuário não encontrado.");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao carregar os dados.");
+    }
+  };
+  
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      const estudanteDoc = await firestore().collection('Estudante').doc('ID_DO_ESTUDANTE').get();
-      const estudanteData = estudanteDoc.data();
+    const fetchUserData = async () => {
+      setLoading(true);
 
-      const vanDoc = await firestore().collection('Van').doc('ID_DA_VAN').get();
-      const vanData = vanDoc.data();
-
-      const motoristaDoc = await firestore().collection('Motorista').doc(vanData.ID_Motorista).get();
-      const motoristaData = motoristaDoc.data();
-
-      setEstudante(estudanteData);
-      setVan(vanData);
-      setMotorista(motoristaData);
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setEstudante(userData); // Atualiza o estado com os dados do Firestore
+            
+            // Carrega a imagem do perfil, se existir
+            if (userData.profileImage) {
+              setImage(userData.profileImage);
+            }
+          } else {
+            console.warn("Documento do usuário não encontrado.");
+          }
+        } else {
+          navigation.replace("Login");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        Alert.alert("Erro", "Erro ao buscar dados do usuário.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchData();
+    fetchUserData();
   }, []);
 
   const handleStatusUpdate = (type, status) => {
@@ -39,21 +89,17 @@ const HomeAluno = ({ route, navigation }) => {
     }
     console.log(`Atualização de status: ${type} - ${status}`);
   };
-  //if (!estudante || !van || !motorista) {
-  //  return <Text>Carregando...</Text>;
-  // }
 
-  const handleLogout = () => {
-    console.log('Iniciar processo de logout');
-      navigation.navigate('Welcome');
 
-    //try {
-     // await auth().signOut();
-    //  console.log("Logout realizado");
-    //  navigation.replace('Welcome'); // Navegar para a tela de login após logout
-  //  } catch (error) {
-   //   console.error("Erro ao fazer logout: ", error);
-  //  }
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); // Deslogar o usuário do Firebase
+      console.log("Logout realizado com sucesso!");
+      navigation.replace('Welcome'); // Navegar para a tela de boas-vindas
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao fazer logout.");
+    }
   };
 
 
@@ -69,21 +115,26 @@ const HomeAluno = ({ route, navigation }) => {
             <Icon name="sign-out" size={30} color="rgba(34, 0, 0, 0.533333)" />
           </TouchableOpacity>
           </View>
-        <View style={styles.header}>
-          {/* <Image source={profilealuno} style={styles.profilePic} />
-        <Text style={styles.greeting}>Olá, {estudante.Nome}</Text>
-        <Text style={styles.vanInfo}>Passageiro da Van: {van.ID_Van}</Text>
-        <Text style={styles.vanInfo}>Motorista: {motorista.Nome}</Text>*/}
-
-
-          <View style={styles.textContainer}>
-            <Text style={styles.greeting}>Olá, Ronielson</Text>
-            <Text style={styles.vanInfo}>Passageiro da Van: SLH2008</Text>
-            <Text style={styles.vanInfo}>Motorista: Fernando</Text>
-            <View style={styles.separatorLine} />
-          </View>
-          <Image source={profilealuno} style={styles.profilePic} />
-        </View>
+          {/* Renderização Condicional */}
+          <View style={styles.header}>
+        {loading ? (
+          <Text>Carregando...</Text>
+        ) : estudante ? (
+          <>
+            {estudante.image ? ( // Verifica se estudante.image existe e é uma string válida
+              <Image source={{ uri: estudante.image }} style={styles.profilePic} />
+            ) : (
+              <Image source={unnamed} style={styles.profilePic} /> // Imagem padrão se não houver imagem
+            )}
+            <View style={styles.textContainer}>
+              <Text style={styles.greeting}>Olá, {estudante.displayName}</Text>
+              {/* ... outros detalhes */}
+            </View>
+          </>
+        ) : (
+          <Text>Erro ao carregar os dados do aluno.</Text>
+        )}
+      </View>
 
         <TouchableOpacity style={styles.mapContainer} onPress={() => navigation.navigate('LocationScreen')}>
           <Image source={mapsvan} style={styles.map} />

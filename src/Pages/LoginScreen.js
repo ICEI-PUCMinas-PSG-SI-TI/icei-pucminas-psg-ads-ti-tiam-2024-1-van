@@ -1,5 +1,5 @@
 // Importações do React e React Native
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,14 @@ import {
   StyleSheet,
   Image,
   Button,
+  ActivityIndicator 
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import CheckBox from '@react-native-community/checkbox';
 import van from '../assets/van.jpg'
+import { auth, db } from '../Database/firebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 // Definição do componente LoginScreen
 const LoginScreen = ({ route, navigation }) => {
@@ -21,11 +25,68 @@ const LoginScreen = ({ route, navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // Estado para controlar a barra de carregamento
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in, check userType and navigate
+        handleNavigationAfterLogin(user);
+      }
+    });
+
+    return unsubscribe; // Clean up the listener
+  }, []);
 
   // Função para lidar com o processo de login
-  const handleLogin = () => {
-    // Aqui você adicionaria a lógica para lidar com o login
-    console.log('Iniciar processo de autenticação');
+  const handleLogin = async () => {
+    setLoading(true); // Mostra a barra de carregamento
+    try {
+      console.log(email, password); // Add this line for debugging
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+     
+
+      // Handle navigation based on user type
+      handleNavigationAfterLogin(user);
+
+    } catch (error) {
+      // Handle errors here (e.g., invalid email/password, etc.)
+      console.error("Error during login:", error.message);
+      Alert.alert("Erro", error.message);
+    } finally {
+      setLoading(false); // Esconde a barra de carregamento, independentemente do resultado
+    }
+  };
+
+
+  const handleNavigationAfterLogin = async (user) => {
+    try {
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+  
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+      if (!userData.userType) { // Check if userType is defined
+        console.error('userType not found in user document');
+        throw new Error('Tipo de usuário não encontrado.');
+      } else if (userData.userType === 'aluno') {
+        navigation.replace('HomeAluno', { studentData: userData });
+      } else if (userData.userType === 'motorista') {
+        navigation.replace('HomeMotorista', { driverData: userData });
+      } else {
+        console.error('Unknown user type:', userData.userType);
+        throw new Error('Tipo de usuário desconhecido.');
+      }
+      } else {
+        console.log("User document not found.");
+        // Handle the case where the user document doesn't exist
+        Alert.alert("Erro", "Documento de usuário não encontrado.");
+      }
+    } catch (error) {
+      console.error("Error handling navigation:", error.message);
+      Alert.alert("Erro", "Ocorreu um erro durante o login.");
+    }
   };
 
   // Layout do componente
@@ -83,9 +144,17 @@ const LoginScreen = ({ route, navigation }) => {
             </View>
             */}
       
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Entrar</Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}> 
+          {loading ? ( // Renderiza a barra de carregamento se loading for true
+            <ActivityIndicator size="small" color="#fff" /> 
+          ) : (
+            <Text style={styles.buttonText}>Entrar</Text>
+          )}
         </TouchableOpacity>
+
+        {loading && ( // Renderiza o texto "Autenticando..." se loading for true
+          <Text style={styles.loadingText}>Autenticando...</Text>
+        )}
         <TouchableOpacity
           onPress={() => navigation.navigate('ForgotPasswordScreen', { userType: userType })}
           >
@@ -118,6 +187,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "gray",
   },
   formContainer: {
     width: '80%',

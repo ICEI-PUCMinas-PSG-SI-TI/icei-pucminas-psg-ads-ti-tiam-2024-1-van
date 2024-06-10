@@ -4,31 +4,43 @@ import { View, TextInput, Button, Alert, Text, StyleSheet, TouchableOpacity, Ima
 import { auth, db } from "../Database/firebaseConfig";
 import { setDoc, doc } from "firebase/firestore"; 
 import van from '../assets/van.jpg';
+import { RadioButton } from "react-native-paper";
 
 const Signup = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [vanCode, setVanCode] = useState("");
+  const [selectedUserType, setSelectedUserType] = useState(null); // Add state for userType
 
-  const handleSignup = async () => { 
+  const handleSignup = async () => {
+    if (!selectedUserType) {
+      Alert.alert("Erro", "Por favor, selecione o tipo de usuário.");
+      return; // Prevent signup if userType is not selected
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       await setDoc(doc(db, "users", user.uid), {
         displayName: name,
-        phoneNumber: phone,
-        uid: user.uid, 
+        vanCode: vanCode,
+        uid: user.uid,
+        userType: selectedUserType,
       });
 
       console.log("User information saved!");
-      // Potentially navigate to another screen or show a success message
+      // Navigate to the appropriate screen based on userType
+      if (selectedUserType === 'aluno') {
+        navigation.replace('HomeAluno', { studentData: { uid: user.uid } });
+      } else if (selectedUserType === 'motorista') {
+        navigation.replace('HomeMotorista', { driverData: { uid: user.uid }}); // Add relevant driver data
+      }
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
       console.error("Error during signup:", errorMessage);
-      // Show an error alert to the user
       Alert.alert("Erro", errorMessage);
     }
   };
@@ -62,6 +74,27 @@ const Signup = ({ navigation }) => {
         secureTextEntry={true}
         style={styles.input}
       />
+      {/* User Type Selection (with RadioButton) */}
+      <View style={styles.userTypeContainer}>
+        <Text style={styles.label}>Tipo de Usuário:</Text>
+        <View style={styles.radioButtonContainer}>
+          <RadioButton
+            value="aluno"
+            status={selectedUserType === 'aluno' ? 'checked' : 'unchecked'}
+            onPress={() => setSelectedUserType('aluno')}
+          />
+          <Text>Aluno</Text>
+        </View>
+        <View style={styles.radioButtonContainer}>
+          <RadioButton
+            value="motorista"
+            status={selectedUserType === 'motorista' ? 'checked' : 'unchecked'}
+            onPress={() => setSelectedUserType('motorista')}
+          />
+          <Text>Motorista</Text>
+        </View>
+      </View>
+
       <TouchableOpacity style={styles.button} onPress={handleSignup}>
         <Text style={styles.buttonText}>Feito</Text>
       </TouchableOpacity>
@@ -173,6 +206,14 @@ const styles = StyleSheet.create({
   },
   loginLink: {
     fontWeight: "bold",
+  },
+  userTypeContainer: {
+    marginBottom: 20,
+  },
+  radioButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
 });
 

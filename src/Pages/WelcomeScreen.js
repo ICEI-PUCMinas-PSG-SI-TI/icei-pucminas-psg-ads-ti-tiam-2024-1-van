@@ -23,12 +23,6 @@ const WelcomeScreen = ({ navigation }) => {
       >
         <Text style={styles.buttonText}>Motorista</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('EditProfile', { userType: 'motorista' })}
-      >
-        <Text style={styles.buttonText}>Editar Perfil Aluno</Text>
-      </TouchableOpacity>
     </View>
   );
 };
