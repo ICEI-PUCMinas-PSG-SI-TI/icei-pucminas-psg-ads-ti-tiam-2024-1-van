@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
-import ListaAlunos from './components/listaAluno'; // Importe o componente ListaAlunos
-import alunos from './components/alunos'; // Importe a lista de alunos fictícios
+import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const styles = StyleSheet.create({
   container: {
@@ -110,7 +110,27 @@ const styles = StyleSheet.create({
   },
 });
 
-const App = () => {
+const HomeMotorista = ({ route, navigation }) => {
+
+  const [nomeMotorista, setNomeMotorista] = useState('');
+  const auth = getAuth();
+  const db = getFirestore();
+
+  useEffect
+(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, 'users', user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setNomeMotorista(docSnap.data().nome); // Supondo que o campo no Firestore seja 'nome'
+        }
+      }
+    });
+    return unsubscribe; // Limpa o listener quando o componente desmonta
+  }, []);
+
+  
 
   const historicoRotas = [
     {  imagem: require('./components/tela.png') },
@@ -122,7 +142,7 @@ const App = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.titulo}>Olá, Fernando!</Text>
+          <Text style={styles.titulo}>Olá, {nomeMotorista}!</Text>
           <Text style={styles.subtitulo}>Veículo cadastrado: SLH2008</Text>
         </View>
         <Image
@@ -188,4 +208,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default HomeMotorista;
