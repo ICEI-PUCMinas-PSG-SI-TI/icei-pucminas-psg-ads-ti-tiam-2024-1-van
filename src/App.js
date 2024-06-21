@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { LoginScreen, Signup, WelcomeScreen, HomeAluno, ForgotPasswordScreen, EmailConfirmationScreen, LocationScreen, SettingsScreen, EditScreen,EditProfile } from "./Pages";
+import { LoginScreen, Signup, WelcomeScreen, HomeAluno, HomeMotorista, ForgotPasswordScreen, EmailConfirmationScreen, LocationScreen, SettingsScreen, EditScreen, EditProfile } from "./Pages";
 import { FlatList } from "react-native-gesture-handler";
 
 const Stack = createNativeStackNavigator();
@@ -33,21 +33,21 @@ export default function App() {
             component={Signup}
             options={{
               headerShown: true,
-              headerTransparent: true, 
-              headerTitle: '', 
-              headerBackTitleVisible: false, 
-              headerTintColor: '#000', 
+              headerTransparent: true,
+              headerTitle: '',
+              headerBackTitleVisible: false,
+              headerTintColor: '#000',
             }}
-            />
-          
+          />
+
           <Stack.Screen
             name="ForgotPasswordScreen"
             component={ForgotPasswordScreen}
             options={{
               headerShown: true,
-              headerTransparent: true, 
-              headerTitle: '', 
-              headerBackTitleVisible: false, 
+              headerTransparent: true,
+              headerTitle: '',
+              headerBackTitleVisible: false,
               headerTintColor: '#000',
             }}
           />
@@ -57,57 +57,58 @@ export default function App() {
             component={EmailConfirmationScreen}
             options={{
               headerShown: true,
-              headerTransparent: true, 
-              headerTitle: '', 
-              headerBackTitleVisible: false, 
+              headerTransparent: true,
+              headerTitle: '',
+              headerBackTitleVisible: false,
               headerTintColor: '#000',
             }}
           />
           <Stack.Screen
             name="HomeAluno"
             component={HomeAluno}
-            options={{ 
+            options={{
               headerShown: true,
-              headerTransparent: true, 
-              headerTitle: '', 
-               }}
-            />
+              headerTransparent: true,
+              headerTitle: '',
+            }}
+          />
           <Stack.Screen
             name="SettingsScreen"
             component={SettingsScreen}
-            options={{ 
+            options={{
               headerShown: true,
-              headerTransparent: true, 
-              headerTitle: '', 
-               }}
-            />
+              headerTransparent: true,
+              headerTitle: '',
+            }}
+          />
           <Stack.Screen
             name="LocationScreen"
             component={LocationScreen}
-            options={{ 
+            options={{
               headerShown: true,
-              headerTransparent: true, 
-              headerTitle: '', 
-               }}
-            />
+              headerTransparent: true,
+              headerTitle: '',
+            }}
+          />
           <Stack.Screen
             name="EditScreen"
             component={EditScreen}
-            options={{ 
+            options={{
               headerShown: true,
-              headerTransparent: true, 
-              headerTitle: '', 
-               }}
-            />
-            <Stack.Screen
+              headerTransparent: true,
+              headerTitle: '',
+            }}
+          />
+          <Stack.Screen
             name="EditProfile"
             component={EditProfile}
-            options={{ 
+            options={{
               headerShown: true,
-              headerTransparent: true, 
-              headerTitle: '', 
-               }}
-            />
+              headerTransparent: true,
+              headerTitle: '',
+            }}
+          />
+          <Stack.Screen name="HomeMotorista" component={HomeMotorista} />
 
         </Stack.Navigator>
       </NavigationContainer>
