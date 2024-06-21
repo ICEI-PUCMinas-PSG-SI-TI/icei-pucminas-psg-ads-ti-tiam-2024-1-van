@@ -219,7 +219,7 @@ const HomeAluno = ({ route, navigation }) => {
           <Icon name="map-pin" size={24} color="#000" />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.highlightedTabButton} onPress={() => navigation.navigate('HomeAluno')}>
+      <TouchableOpacity style={styles.highlightedTabButton}>
         <Icon name="home" size={24} color="#000" />
       </TouchableOpacity>
       <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('EditProfile')}>
