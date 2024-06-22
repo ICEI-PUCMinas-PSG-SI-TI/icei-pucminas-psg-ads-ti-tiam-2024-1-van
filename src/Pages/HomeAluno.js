@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { auth } from '../Database/firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../Database/firebaseConfig'; 
 import unnamed from '../img/unnamed.png';
 import mapsvan from '../img/mapsvan.png';
@@ -81,13 +81,29 @@ const HomeAluno = ({ route, navigation }) => {
     fetchUserData();
   }, []);
 
-  const handleStatusUpdate = (type, status) => {
-    if (type === 'ida') {
-      setStatusIda(status);
-    } else if (type === 'volta') {
-      setStatusVolta(status);
+  const handleStatusUpdate = async (type, status) => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+  
+        // Atualiza o status no Firestore
+        await updateDoc(userDocRef, {
+          [type]: status, // Atualiza o campo 'ida' ou 'volta' dinamicamente
+        });
+        
+        // Atualiza o estado local (opcional, mas recomendado para consistência da UI)
+        if (type === 'ida') {
+          setStatusIda(status);
+        } else if (type === 'volta') {
+          setStatusVolta(status);
+        }
+        console.log(`Atualização de status: ${type} - ${status}`);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar status:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao atualizar seu status.");
     }
-    console.log(`Atualização de status: ${type} - ${status}`);
   };
 
 

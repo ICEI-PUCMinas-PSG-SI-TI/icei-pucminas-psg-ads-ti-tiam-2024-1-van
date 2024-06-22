@@ -20,7 +20,7 @@ const EditProfile = ({ navigation }) => {
   const [formData, setFormData] = useState({
     displayName: "", // Campo para o nome de exibição
     email: "",
-    codigoVan: "",
+    vanCode: "",
     diasAula: "",
     turno: "",
     frequencia: "",
@@ -140,9 +140,9 @@ const EditProfile = ({ navigation }) => {
           />
           <Input
             label="Código da Van"
-            value={formData.codigoVan}
+            value={formData.vanCode}
             onChangeText={(text) =>
-              setFormData({ ...formData, codigoVan: text })
+              setFormData({ ...formData, vanCode: text })
             }
           />
           <Input
