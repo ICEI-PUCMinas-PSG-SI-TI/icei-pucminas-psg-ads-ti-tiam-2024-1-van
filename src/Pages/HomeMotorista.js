@@ -26,8 +26,7 @@ const HomeMotorista = ({ navigation }) => {
       if (user) {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
-        console.log("Usuário autenticado:", user);
-      console.log("vanCode do motorista:", docSnap.data().vanCode);
+        console.log("vanCode do motorista:", docSnap.data().vanCode);
       
         if (docSnap.exists()) {
           setNomeMotorista(docSnap.data().displayName);
@@ -98,10 +97,11 @@ const HomeMotorista = ({ navigation }) => {
         <ScrollView>
         {alunos.map((aluno) => ( // Exibir a lista de alunos
             <View key={aluno.uid} style={styles.itemLista}>
-              <Image
-                source={require('../img/unnamed.png')} // Imagem do aluno ou padrão
-                style={styles.fotoAluno}
-              />
+              {aluno.image ? ( // Renderização condicional da imagem
+                <Image source={{ uri: aluno.image }} style={styles.fotoAluno} />
+              ) : (
+                <Image source={require('../img/unnamed.png')} style={styles.fotoAluno} /> // Imagem padrão
+              )}
               <View style={styles.infoAluno}>
                 <Text style={styles.nomeAluno}>{aluno.displayName}</Text>
                 <View style={styles.status}>
