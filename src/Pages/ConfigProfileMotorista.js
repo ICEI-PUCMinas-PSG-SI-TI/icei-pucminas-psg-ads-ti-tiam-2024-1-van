@@ -15,18 +15,13 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL,uploadBytesResumable  } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "react-native-vector-icons/FontAwesome";
-import unnamed from '../img/unnamed.png';
 
-
-const EditProfile = ({ navigation }) => {
+const ConfigProfileMotorista = ({ navigation }) => {
   const [formData, setFormData] = useState({
-    displayName: "",
+    displayName: "", 
     email: "",
     vanCode: "",
-    diasAula: "",
-    turno: "",
-    frequencia: "",
-    endereco: "",
+    placaVan: "",
     image: null,
   });
 
@@ -116,7 +111,7 @@ const EditProfile = ({ navigation }) => {
                   {
                     text: "OK",
                     onPress: () => {
-                      navigation.replace("HomeAluno", { studentData: formData }); 
+                      navigation.replace("HomeMotorista", { motoristaData: formData }); 
                     },
                   },
                 ]
@@ -136,7 +131,7 @@ const EditProfile = ({ navigation }) => {
               {
                 text: "OK",
                 onPress: () => {
-                  navigation.replace("HomeAluno", { studentData: formData }); 
+                  navigation.replace("HomeMotorista", { motoristaData: formData }); 
                 },
               },
             ]
@@ -152,14 +147,24 @@ const EditProfile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.headerText}>Voltar</Text>
-          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              /* Handle back navigation */
+            }}
+          ></TouchableOpacity>
+          <Text style={styles.headerText}>Editar Perfil</Text>
         </View>
+
+        {/* Form Container */}
         <View style={styles.formContainer}>
+          {/* Image */}
           <View style={styles.imageContainer}>
-            <Image source={{ uri: formData.image }} style={styles.profileImage} />
+            <Image
+              source={{ uri: formData.image }}
+              style={styles.profileImage}
+            />
             <TouchableOpacity
               style={styles.editImageButton}
               onPress={pickImage}
@@ -167,10 +172,15 @@ const EditProfile = ({ navigation }) => {
               <Icon name="camera" size={20} color="#FFDE59" />
             </TouchableOpacity>
           </View>
+
+          {/* Inputs */}
           <Input
             label="Nome"
             value={formData.displayName}
-            onChangeText={(text) => setFormData({ ...formData, displayName: text })}
+            onChangeText={(text) =>
+              setFormData({ ...formData, displayName: text })
+            }
+            editable={true}
           />
           <Input
             label="Email"
@@ -184,25 +194,13 @@ const EditProfile = ({ navigation }) => {
             onChangeText={(text) => setFormData({ ...formData, vanCode: text })}
           />
           <Input
-            label="Dias de Aula"
-            value={formData.diasAula}
-            onChangeText={(text) => setFormData({ ...formData, diasAula: text })}
+            label="Placa da Van"
+            value={formData.placaVan}
+            onChangeText={(text) =>
+              setFormData({ ...formData, placaVan: text })
+            }
           />
-          <Input
-            label="Turno"
-            value={formData.turno}
-            onChangeText={(text) => setFormData({ ...formData, turno: text })}
-          />
-          <Input
-            label="Frequência"
-            value={formData.frequencia}
-            onChangeText={(text) => setFormData({ ...formData, frequencia: text })}
-          />
-          <Input
-            label="Endereço"
-            value={formData.endereco}
-            onChangeText={(text) => setFormData({ ...formData, endereco: text })}
-          />
+          {/* Save Button */}
           <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
             <Text style={styles.saveButtonText}>Salvar alterações</Text>
           </TouchableOpacity>
@@ -307,4 +305,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditProfile;
+export default ConfigProfileMotorista;

@@ -1,28 +1,82 @@
-import React from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Alert,
+  TouchableOpacity
+} from "react-native";
+import { auth } from "../Database/firebaseConfig";
+import { doc, getDoc, query, collection, where, getDocs, updateDoc  } from "firebase/firestore";
+import { db } from "../Database/firebaseConfig";
 
-const users = [
-  { name: 'Tatiana dos Santos', imageUrl: 'https://via.placeholder.com/100', schedule: ['Noite', 'Ida e Volta', 'Seg/Qua/Qui'] },
-  { name: 'Valéria Almeida', imageUrl: 'https://via.placeholder.com/100', schedule: ['Noite', 'Somente Volta', 'Seg/Ter/Qui'] },
-  { name: 'Giovanna Marinho', imageUrl: 'https://via.placeholder.com/100', schedule: ['Noite', 'Ida e Volta', 'Seg/Qui/Sex'] },
-  { name: 'Oliver Germano', imageUrl: 'https://via.placeholder.com/100', schedule: ['Noite', 'Somente Volta', 'Seg/Qui'] },
-  { name: 'Ronielson da Silva', imageUrl: 'https://via.placeholder.com/100', schedule: ['Manhã', 'Ida e Volta', 'Seg/Ter/Qua/Qui/Sex'] },
-  { name: 'Mariana Alves', imageUrl: 'https://via.placeholder.com/100', schedule: ['Manhã', 'Ida e Volta', 'Seg/Ter/Qua'] },
-];
+export default function GerenciarAlunos() {
+  const [alunos, setAlunos] = useState([]);
+  const [vanCode, setVanCode] = useState(''); // Estado para armazenar o código da van do motorista
 
-export default function App() {
+  useEffect(() => {
+    const fetchAlunosDoMotorista = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const userDocRef = doc(db, "users", user.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          if (userDocSnap.exists()) {
+            setVanCode(userDocSnap.data().vanCode); 
+            // Busca os alunos com o mesmo vanCode do motorista
+            const alunosQuery = query(
+              collection(db, "users"),
+              where("vanCode", "==", userDocSnap.data().vanCode),
+              where("userType", "==", "aluno")
+            );
+            const querySnapshot = await getDocs(alunosQuery);
+            const alunosData = querySnapshot.docs.map((doc) => doc.data());
+            setAlunos(alunosData);
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao buscar dados dos alunos:", error);
+        Alert.alert("Erro", "Erro ao buscar dados dos alunos.");
+      }
+    };
+
+    fetchAlunosDoMotorista();
+  }, [vanCode]); // Executa a busca sempre que o vanCode do motorista mudar (se aplicável)
+
+  const handleDesvincularAluno = async (alunoUid) => {
+    try {
+      const alunoDocRef = doc(db, "users", alunoUid);
+      await updateDoc(alunoDocRef, {
+        vanCode: '', // Remove o código da van do aluno
+      });
+      Alert.alert("Sucesso", "Aluno desvinculado da van com sucesso!");
+
+      // Atualiza a lista de alunos após desvincular
+      setAlunos(alunos.filter((a) => a.uid !== alunoUid));
+    } catch (error) {
+      console.error("Erro ao desvincular aluno:", error);
+      Alert.alert("Erro", "Ocorreu um erro ao desvincular o aluno.");
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
-      {users.map((user, index) => (
-        <View key={index} style={styles.user}>
+      {alunos.map((aluno) => (
+        <View key={aluno.uid} style={styles.user}>
           <View style={styles.userImage}>
-            <Image source={{ uri: user.imageUrl }} style={styles.image} />
+            <Image source={{ uri: aluno.image }} style={styles.image} />
           </View>
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>{user.name}</Text>
-            {user.schedule.map((item, i) => (
-              <Text key={i} style={styles.userLabel}>{item}</Text>
-            ))}
+            <Text style={styles.userName}>{aluno.displayName}</Text>
+            <Text style={styles.userLabel}>Turno: {aluno.turno || "Não informado"}</Text>
+            <Text style={styles.userLabel}>Frequência: {aluno.frequencia || "Não informado"}</Text>
+            <Text style={styles.userLabel}>Dias de Aula: {aluno.diasAula || "Não informado"}</Text>
+            <Text style={styles.userLabel}>Endereço: {aluno.endereco || "Não informado"}</Text>
+            <TouchableOpacity style={styles.desvincularButton} onPress={() => handleDesvincularAluno(aluno.uid)}>
+              <Text style={styles.desvincularButtonText}>Desvincular</Text>
+            </TouchableOpacity>
           </View>
         </View>
       ))}
@@ -70,7 +124,18 @@ const styles = StyleSheet.create({
   userLabel: {
     fontWeight: 'bold',
     fontSize: 14,
-    color: '#ff0',
+    color: 'black',
     marginBottom: 5,
   },
+  desvincularButton: {
+    backgroundColor: 'red',
+    padding: 8,
+    borderRadius: 5,
+    marginTop: 5,
+    alignSelf: 'flex-start', // Alinha o botão à esquerda
+  },
+  desvincularButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  }
 });

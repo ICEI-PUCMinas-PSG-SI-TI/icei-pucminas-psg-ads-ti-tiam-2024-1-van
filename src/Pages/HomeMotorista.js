@@ -7,48 +7,106 @@ import {
   Image,
   ScrollView,
   Alert,
+  ActivityIndicator
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { getFirestore, doc, getDoc, query, collection, where, getDocs } from "firebase/firestore";
-
-
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { db , storage} from '../Database/firebaseConfig'; 
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  query,
+  collection,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
+import iconTeste from "../img/iconTeste.png";
+import unnamed from '../img/unnamed.png';
+import { auth } from '../Database/firebaseConfig';
+import profilealuno from "../img/profilealuno.png";
 
 const HomeMotorista = ({ navigation }) => {
   const [nomeMotorista, setNomeMotorista] = useState("");
   const [vanCode, setVanCode] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [loadingImage, setLoadingImage] = useState(true); // Estado para carregamento da imagem
   const [alunos, setAlunos] = useState([]); 
+  const [motorista, setMotorista] = useState(null);
+  const [image, setImage] = useState(""); // Estado para a imagem
   const auth = getAuth();
   const db = getFirestore();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    let unsubscribeAuth;
+    let unsubscribeSnapshot;
+  
+    const fetchMotoristaData = async () => {
+      setLoading(true);
+      setLoadingImage(true); // Inicia o carregamento da imagem
+    try{
+      const user = auth.currentUser;
       if (user) {
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         console.log("vanCode do motorista:", docSnap.data().vanCode);
-      
-        if (docSnap.exists()) {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        
+  
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setMotorista(userData);
           setNomeMotorista(docSnap.data().displayName);
-          const motoristaVanCode = docSnap.data().vanCode;
-          setVanCode(motoristaVanCode); 
-
-          if (motoristaVanCode) { // Verifica se vanCode está definido
-            // Buscar alunos da van
+          const motoristaVanCode = docSnap.data().vanCode.toUpperCase();
+          setVanCode(motoristaVanCode);
+          // Busca a URL da imagem do Storage apenas se existir
+          if (userData.image) { 
+            try {
+              const imageRef = ref(storage, userData.image); 
+              const imageUrl = await getDownloadURL(imageRef);
+              console.log("Imagem carregada:", imageUrl); // Adicione este log
+              setImage(imageUrl);
+            } catch (error) {
+              console.error("Erro ao buscar imagem do Storage:", error);
+              setImage(profilealuno); // Imagem padrão em caso de erro
+            }
+          } else {
+            setImage(profilealuno); // Define a imagem padrão se não existir
+          }
+  
+          // Busca alunos da van apenas se o vanCode for válido
+          if (motoristaVanCode) {
             const alunosQuery = query(
               collection(db, "users"),
-              where("vanCode", "==", motoristaVanCode.toUpperCase()),
+              where("vanCode", "==", motoristaVanCode),
               where("userType", "==", "aluno")
             );
-            const alunosSnapshot = await getDocs(alunosQuery);
-            const alunosData = alunosSnapshot.docs.map((doc) => doc.data());
-            setAlunos(alunosData);
+  
+            unsubscribeSnapshot = onSnapshot(alunosQuery, (querySnapshot) => {
+              const alunosData = querySnapshot.docs.map((doc) => doc.data());
+              setAlunos(alunosData);
+            });
           }
         }
+      
       }
-    });
-    return unsubscribe;
-  }, [vanCode]);
+    }catch (error) {
+      console.error("Error fetching user data:", error);
+      Alert.alert("Erro", "Erro ao buscar dados do usuário.");
+    } finally {
+      setLoading(false); // Finaliza o carregamento dos dados do usuário
+    }
+    };
+  
+    unsubscribeAuth = onAuthStateChanged(auth, fetchMotoristaData);
+  
+    return () => {
+      unsubscribeAuth && unsubscribeAuth(); // Cancela a assinatura do auth
+      unsubscribeSnapshot && unsubscribeSnapshot(); // Cancela a assinatura do snapshot
+    };
+  }, []); // Sem dependências para garantir que execute apenas uma vez ao montar
+  
 
   const handleLogout = async () => {
     try {
@@ -80,15 +138,39 @@ const HomeMotorista = ({ navigation }) => {
           <Icon name="sign-out" size={30} color="rgba(34, 0, 0, 0.533333)" />
         </TouchableOpacity>
       </View>
+
+
       <View style={styles.header}>
-        <View>
-          <Text style={styles.titulo}>Olá, {nomeMotorista}!</Text>
-          <Text style={styles.subtitulo}>Código da Van: {vanCode}</Text>
-        </View>
-        <Image
-          source={require("../img/iconTeste.png")}
-          style={styles.fotoPerfil}
-        />
+      {loading ? (
+            <Text>Carregando...</Text>
+          ) : motorista ? (
+            <>
+              <View>
+              <Text style={styles.titulo}>Olá, {nomeMotorista}!</Text>
+              <Text style={styles.subtitulo}>Código da Van: {vanCode}</Text>
+            </View>
+            {motorista.image ? (
+                <Image
+                  source={{ uri: motorista.image }}
+                  style={styles.profilePic}
+                  onLoadEnd={() => setLoadingImage(false)}
+                  onError={(error) => {
+                    console.error(
+                      "Erro ao carregar a imagem:",
+                      error.nativeEvent.error
+                    );
+                    setLoadingImage(false);
+                  }}
+                />
+              ) : (
+                <Image source={unnamed} style={styles.profilePic} /> // Imagem padrão se não houver imagem
+              )}
+            </>
+          ): (
+            <Text>Erro ao carregar os dados do aluno.</Text>
+          )}
+        
+        
       </View>
 
       <View style={styles.conteudo}>
@@ -134,6 +216,23 @@ const HomeMotorista = ({ navigation }) => {
           </View>
         </ScrollView>
       </View>
+      <View style={styles.tabBar}>
+      {/* ... (seus botões existentes para mapa e home) */}
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('LocationScreen')}>
+        <View style={styles.tabButton}>
+          <Icon name="map-pin" size={24} color="#000" />
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.highlightedTabButton}>
+        <Icon name="home" size={24} color="#000" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('GerenciarAlunos')}>
+        <Icon name="users" size={24} color="#000" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('ConfigProfileMotorista')}>
+        <Icon name="cog" size={24} color="#000" />
+      </TouchableOpacity>
+    </View>
     </View>
   );
 };
@@ -146,9 +245,30 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     padding: 10,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     marginRight: 20,
     marginTop: 20,
+  },
+  tabButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  highlightedTabButton: {
+    width: 85,
+    height: 70,
+    top: -15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#D9D9D9',
+    borderRadius: 35,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   header: {
     flexDirection: "row",
@@ -180,6 +300,34 @@ const styles = StyleSheet.create({
   },
   conteudo: {
     flex: 1,
+  },
+  profilePic: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    borderColor: "#FFDE59",
+    borderWidth: 5,
+    marginRight: 5,
+  },
+  tabBar: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    height: 59,
+    backgroundColor: "#D9D9D9",
+    borderTopColor: "transparent",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    paddingVertical: 10,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   tituloLista: {
     fontSize: 20,

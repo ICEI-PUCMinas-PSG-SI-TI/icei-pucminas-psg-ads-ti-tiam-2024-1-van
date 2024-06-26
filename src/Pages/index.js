@@ -9,6 +9,8 @@ import LocationScreen from "./LocationScreen";
 import EditScreen from "./EditScreen";
 import EditProfile from './ConfigProfileAluno';
 import HomeMotorista from "./HomeMotorista";
+import GerenciarAlunos from './GerenciarAlunos';
+import ConfigProfileMotorista from './ConfigProfileMotorista'
 
 export {
   LoginScreen,
@@ -21,5 +23,7 @@ export {
   LocationScreen,
   EditScreen,
   EditProfile,
-  HomeMotorista
+  HomeMotorista,
+  GerenciarAlunos,
+  ConfigProfileMotorista
 }
