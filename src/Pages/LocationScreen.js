@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Text, Image, Button } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text, Image, Button , TouchableOpacity} from 'react-native';
+import Icon from "react-native-vector-icons/FontAwesome";
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { getAuth } from 'firebase/auth';
 import { doc, getFirestore, updateDoc, getDoc } from 'firebase/firestore';
 
-const LocationScreen = () => {
+const LocationScreen = ({ route, navigation }) => {
   const [location, setLocation] = useState(null);
   const [profileUrl, setProfileUrl] = useState(null);
   const [isSharingLocation, setIsSharingLocation] = useState(false);
@@ -92,7 +93,27 @@ const LocationScreen = () => {
         onPress={toggleLocationSharing}
         color={isSharingLocation ? "red" : "green"}
       />
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={styles.highlightedTabButton}
+          //onPress={() => navigation.navigate("LocationScreen")}
+        >
+          <View style={styles.tabButton}>
+            <Icon name="map-pin" size={24} color="#000" />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabButton}>
+          <Icon name="home" size={24} color="#000" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.tabButton}
+          onPress={() => navigation.navigate("EditProfile")}
+        >
+          <Icon name="cog" size={24} color="#000" />
+        </TouchableOpacity>
+      </View>
     </View>
+    
   );
 };
 
@@ -109,6 +130,47 @@ const styles = StyleSheet.create({
     width: 40, // Tamanho reduzido
     height: 40, // Tamanho reduzido
     borderRadius: 20, // Circular
+  },
+  tabBar: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    height: 59,
+    backgroundColor: "#D9D9D9",
+    borderTopColor: "transparent",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    paddingVertical: 10,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  tabButton: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  highlightedTabButton: {
+    width: 85,
+    height: 70,
+    top: -15,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#D9D9D9",
+    borderRadius: 35,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 
