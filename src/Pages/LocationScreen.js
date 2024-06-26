@@ -1,94 +1,82 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { View, StyleSheet, ActivityIndicator, Text, Image, Button } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import Icon from 'react-native-vector-icons/Feather';
+import { getAuth } from 'firebase/auth';
+import { doc, getFirestore, updateDoc } from 'firebase/firestore';
 
-const LocationScreen = ({ navigation }) => {
+const LocationScreen = () => {
   const [location, setLocation] = useState(null);
-  const [sharing, setSharing] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [watcher, setWatcher] = useState(null);
+  const [profileUrl, setProfileUrl] = useState(null);
+  const [isSharingLocation, setIsSharingLocation] = useState(false);
+  const [locationSubscription, setLocationSubscription] = useState(null);
+
+  const auth = getAuth();
+  const db = getFirestore();
 
   useEffect(() => {
-    (async () => {
+    return () => locationSubscription?.remove();  // Cleanup location watcher on unmount
+  }, [locationSubscription]);
+
+  const toggleLocationSharing = async () => {
+    if (isSharingLocation) {
+      locationSubscription?.remove();
+      setIsSharingLocation(false);
+      setLocation(null);  // Optionally reset the location when stopping
+    } else {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        console.log('Permissão de localização negada');
+        alert('Permission to access location was denied');
         return;
       }
-    })();
 
-    return () => {
-      stopSharingLocation();
-    };
-  }, []);
+      const subscription = await Location.watchPositionAsync({
+        accuracy: Location.Accuracy.BestForNavigation,
+        timeInterval: 10000,  // Update interval in milliseconds
+      }, (locationUpdate) => {
+        setLocation(locationUpdate.coords);
+        updateDoc(doc(db, 'users', auth.currentUser.uid), {
+          latitude: locationUpdate.coords.latitude,
+          longitude: locationUpdate.coords.longitude,
+        });
+      });
 
-  const startSharingLocation = async () => {
-    setLoading(true);
-    const locationWatcher = await Location.watchPositionAsync(
-      {
-        accuracy: Location.Accuracy.High,
-        timeInterval: 5000, // Atualizar a cada 5 segundos
-        distanceInterval: 0,
-      },
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setLocation({ latitude, longitude });
-        setLoading(false); // Parar o carregamento quando a localização é obtida
-      }
-    );
-    setWatcher(locationWatcher);
-    setSharing(true);
-  };
-
-  const stopSharingLocation = () => {
-    if (watcher) {
-      watcher.remove();
-    }
-    setWatcher(null);
-    setSharing(false);
-    setLocation(null); // Remover a localização para que o mapa desapareça
-  };
-
-  const toggleSharing = () => {
-    if (sharing) {
-      stopSharingLocation();
-    } else {
-      startSharingLocation();
+      setLocationSubscription(subscription);
+      setIsSharingLocation(true);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mapa em tempo real - Motorista</Text>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+      {location ? (
+        <MapView
+          style={styles.map}
+          region={{  // Changed from initialRegion to region for dynamic updates
+            latitude: location.latitude,
+            longitude: location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        >
+          <Marker
+            coordinate={{ latitude: location.latitude, longitude: location.longitude }}
+            title="Your Location"
+            description="Here is your current location">
+            {profileUrl ? (
+              <Image source={{ uri: profileUrl }} style={styles.profilePic} />
+            ) : (
+              <Text style={styles.noImageText}>No Image Available</Text>  // Text when no image
+            )}
+          </Marker>
+        </MapView>
       ) : (
-        sharing && location && (
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            style={styles.map}
-            initialRegion={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-              latitudeDelta: 0.005,
-              longitudeDelta: 0.005,
-            }}
-          >
-            <Marker coordinate={location}>
-              <View style={styles.marker}>
-                <Icon name="user" size={20} color="#FFF" />
-              </View>
-            </Marker>
-          </MapView>
-        )
+        <ActivityIndicator size="large" color="#0000ff" />
       )}
-      <TouchableOpacity style={styles.toggleButton} onPress={toggleSharing}>
-        <Text style={styles.toggleButtonText}>
-          {sharing ? 'Parar Compartilhamento' : 'Iniciar Compartilhamento'}
-        </Text>
-      </TouchableOpacity>
+      <Button
+        title={isSharingLocation ? "Stop Sharing Location" : "Start Sharing Location"}
+        onPress={toggleLocationSharing}
+        color={isSharingLocation ? "red" : "green"}
+      />
     </View>
   );
 };
@@ -99,33 +87,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 10,
-  },
   map: {
     width: '100%',
-    height: '80%',
+    height: '90%',  // Adjusted height to ensure button visibility
   },
-  marker: {
-    backgroundColor: '#FF0000',
-    padding: 5,
-    borderRadius: 10,
-    borderColor: '#FFF',
-    borderWidth: 2,
+  profilePic: {
+    width: 50,
+    height: 50,
   },
-  toggleButton: {
-    position: 'absolute',
-    bottom: 20,
-    backgroundColor: '#FFDE59',
+  noImageText: {  // Style for text when no image is available
+    color: 'white',
     padding: 10,
-    borderRadius: 5,
-  },
-  toggleButtonText: {
-    color: '#000',
-    fontWeight: 'bold',
-  },
+    backgroundColor: 'rgba(0,0,0,0.5)'
+  }
 });
 
 export default LocationScreen;
