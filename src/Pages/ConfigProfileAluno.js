@@ -154,7 +154,7 @@ const EditProfile = ({ navigation }) => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Text style={styles.headerText}>Voltar</Text>
+            <Text style={styles.headerText}>Editar Perfil</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.formContainer}>
