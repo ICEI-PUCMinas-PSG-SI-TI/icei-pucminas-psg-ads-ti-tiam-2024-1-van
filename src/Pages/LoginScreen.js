@@ -160,8 +160,10 @@ const LoginScreen = ({ route, navigation }) => {
           >
         <Text style={styles.forgotPasswordText}>Esqueci a senha</Text>
           </TouchableOpacity>
-        <View style={styles.orContainer}>
-          <Text style={styles.orText}>Ou</Text>
+        <View style={styles.separatorContainer}>
+        <View style={styles.separatorLine} />
+        <Text style={styles.separatorText}> Ou </Text>
+        <View style={styles.separatorLine} />
         </View>
         <TouchableOpacity style={styles.facebookButton}>
           <Text style={styles.facebookButtonText}>Entre com o Facebook</Text>
@@ -187,6 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
+    paddingRight: 20,
   },
   loadingText: {
     marginTop: 10,
@@ -198,7 +201,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logo: {
-    width: '100%',
+    width: '110%',
     height: 110, // Defina a altura conforme necessário
   },
   label: {
@@ -247,6 +250,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
+    width: '110%',
   },
   buttonText: {
     color: 'black',
@@ -260,6 +264,8 @@ const styles = StyleSheet.create({
     textAlign: 'center', // Alinha o texto ao centro
     marginTop:6,
     marginBottom: 0, // Margem na parte inferior para separar do texto "Ou"
+    width: '110%',
+
   },
   orContainer: {
      marginTop: 10, // Ajuste conforme necessário para espaçamento
@@ -270,11 +276,23 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#333',
   },
+  separatorContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+    width: '100%',
+  },
+  separatorLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#ccc",
+  },
   facebookButton: {
     backgroundColor: '#3B5998',
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    width: '110%',
   },
   facebookButtonText: {
     fontSize: 13,
@@ -286,6 +304,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    width: '110%',
   },
   googleButtonText: {
     fontSize: 13,
@@ -296,6 +315,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 10,
     borderRadius: 5,
+    width: '110%',
+
   },
   registerButtonText: {
     fontSize: 13,

@@ -120,24 +120,20 @@ const HomeMotorista = ({ navigation }) => {
   };
 
   const historicoRotas = [
-    { imagem: require("../img/tela.png") },
-    { imagem: require("../img/tela.png") },
-    { imagem: require("../img/tela.png") },
+    { imagem: require("../img/mapsvan.png") },
+    { imagem: require("../img/mapsvan.png") },
+    { imagem: require("../img/mapsvan.png") },
   ];
 
   return (
     <View style={styles.container}>
+      <View style={styles.container}>
+        <ScrollView>
       <View>
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={() => navigation.navigate("Welcome")}
-        >
-          <Icon name="sign-out" size={0} color="rgba(34, 0, 0, 0.533333)" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Icon name="sign-out" size={30} color="rgba(34, 0, 0, 0.533333)" />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Icon name="sign-out" size={30} color="rgba(34, 0, 0, 0.533333)" />
+          </TouchableOpacity>
+        </View>
 
 
       <View style={styles.header}>
@@ -169,15 +165,12 @@ const HomeMotorista = ({ navigation }) => {
           ): (
             <Text>Erro ao carregar os dados do aluno.</Text>
           )}
+          </View>
         
-        
-      </View>
-
-      <View style={styles.conteudo}>
         <Text style={styles.tituloLista}>Situação dos Alunos</Text>
-        <Text style={styles.SubtituloLista}>Ida Volta</Text>
-        <ScrollView>
+        <Text style={styles.SubtituloLista}>Ida  Volta</Text>
         {alunos.map((aluno) => ( // Exibir a lista de alunos
+        <View style={styles.conteudo}>
             <View key={aluno.uid} style={styles.itemLista}>
               {aluno.image ? ( // Renderização condicional da imagem
                 <Image source={{ uri: aluno.image }} style={styles.fotoAluno} />
@@ -204,13 +197,16 @@ const HomeMotorista = ({ navigation }) => {
                 </View>
               </View>
             </View>
+            </View>
           ))}
           <View style={styles.historicoContainer}>
             <Text style={styles.historicoTitulo}>Histórico de Rotas</Text>
             {historicoRotas.map((rota, index) => (
+              <View style={styles.conteudo}>
               <View key={index} style={styles.rota}>
                 <Image source={rota.imagem} style={styles.rotaImagem} />
                 <Text style={styles.rotaTexto}>{rota.data}</Text>
+              </View>
               </View>
             ))}
           </View>
@@ -241,7 +237,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    padding: 20,
   },
   logoutButton: {
     padding: 10,
@@ -249,65 +244,118 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginTop: 20,
   },
-  tabButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  highlightedTabButton: {
-    width: 85,
-    height: 70,
-    top: -15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#D9D9D9',
-    borderRadius: 35,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
   header: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    paddingHorizontal: 20,
+    paddingTop: 40,
+    paddingBottom: 20,
   },
   titulo: {
-    fontSize: 24,
-    color: "gray",
+    fontSize: 50,
     fontWeight: "bold",
-    marginBottom: 5,
+    color: "rgba(34, 0, 0, 0.533333)",
   },
   subtitulo: {
-    fontSize: 12,
-    color: "black",
-    marginBottom: 10,
+    fontSize: 15,
     fontWeight: "bold",
-  },
-  fotoPerfil: {
-    width: 80,
-    height: 80,
-    borderRadius: 50,
-    position: "absolute",
-    top: 0,
-    right: 0,
-    marginRight: 20,
-    marginTop: 20,
-  },
-  conteudo: {
-    flex: 1,
+    color: "#A0A0A0",
+    marginLeft: 5,
   },
   profilePic: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     borderRadius: 100,
     borderColor: "#FFDE59",
     borderWidth: 5,
     marginRight: 5,
+  },
+  conteudo: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  tituloLista: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+    color: "#595D60",
+  },
+  SubtituloLista: {
+    fontSize: 15,
+    color: "#595D60",
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginRight: 15,
+    alignSelf: "flex-end",
+  },
+  itemLista: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    padding: 10,
+    backgroundColor: "#F9F9F9",
+  },
+  fotoAluno: {
+    width: 60,
+    height: 60,
+    borderRadius: 100,
+    borderColor: "#FFDE59",
+    borderWidth: 2,
+    marginRight: 15,
+  },
+  infoAluno: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  nomeAluno: {
+    fontSize: 20,
+    color: "#4C4C4C",
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  status: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  statusIcon: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 15,
+  },
+  icone: {
+    marginRight: 5,
+  },
+  historicoContainer: {
+    marginTop: 20,
+  },
+  historicoTitulo: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 5,
+    textAlign: "center",
+    color: "#595D60",
+  },
+  rota: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    padding: 10,
+    backgroundColor: "#F9F9F9",
+    borderColor: "#595D60",
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  rotaImagem: {
+    width: 50,
+    height: 50,
+    marginRight: 15,
+  },
+  rotaTexto: {
+    fontSize: 14,
+    color: "#4C4C4C",
   },
   tabBar: {
     flexDirection: "row",
@@ -329,73 +377,26 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
-  tituloLista: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "black",
+  tabButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  itemLista: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  fotoAluno: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  infoAluno: {
-    flex: 1,
-  },
-  nomeAluno: {
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  status: {
-    flexDirection: "row",
-  },
-  statusIcon: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 10,
-  },
-  SubtituloLista: {
-    position: "absolute",
-    top: 40,
-    right: 30,
-    fontWeight: "bold",
-  },
-  icone: {
-    width: 20,
-    height: 20,
-
-    position: "absolute",
-    top: 0,
-    right: 0,
-    left: 145,
-  },
-  icones: {
-    width: 20,
-    height: 20,
-
-    position: "absolute",
-    top: 0,
-    right: 0,
-    left: 170,
-  },
-  historicoContainer: {
-    marginTop: 20,
-  },
-  historicoTitulo: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "black",
-  },
-  rota: {
-    marginBottom: 5,
+  highlightedTabButton: {
+    width: 85,
+    height: 70,
+    top: -15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#D9D9D9',
+    borderRadius: 35,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 

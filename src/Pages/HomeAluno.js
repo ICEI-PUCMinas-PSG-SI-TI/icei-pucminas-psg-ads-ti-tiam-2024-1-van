@@ -126,6 +126,15 @@ const HomeAluno = ({ route, navigation }) => {
             <Text>Carregando...</Text>
           ) : estudante ? (
             <>
+              <View style={styles.textContainer}>
+                <Text style={styles.greeting}>
+                  Olá,{"\n"}
+                  {estudante?.displayName}!
+                </Text>
+                <Text style={styles.vanInfo}>
+                  Passageiro da VAN: {estudante?.vanCode}
+                </Text>
+              </View>
               {estudante.image ? (
                 <Image
                   source={{ uri: estudante.image }}
@@ -142,11 +151,6 @@ const HomeAluno = ({ route, navigation }) => {
               ) : (
                 <Image source={unnamed} style={styles.profilePic} /> // Imagem padrão se não houver imagem
               )}
-              <View style={styles.textContainer}>
-                <Text style={styles.greeting}>
-                  Olá, {estudante?.displayName}
-                </Text>
-              </View>
             </>
           ) : (
             <Text>Erro ao carregar os dados do aluno.</Text>
@@ -280,15 +284,15 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   profilePic: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     borderRadius: 100,
     borderColor: "#FFDE59",
     borderWidth: 5,
     marginRight: 5,
   },
   greeting: {
-    fontSize: 50,
+    fontSize: 55,
     fontWeight: "bold",
     marginTop: 10,
     color: "rgba(34, 0, 0, 0.533333)",
@@ -297,6 +301,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     color: "#595D60",
+    textTransform: 'uppercase',
+    marginLeft: 5,
   },
   separatorLine: {
     height: 1,
@@ -318,6 +324,7 @@ const styles = StyleSheet.create({
   statusContainer: {
     paddingHorizontal: 10,
     paddingBottom: 60,
+
   },
   statusTitle: {
     fontSize: 25,

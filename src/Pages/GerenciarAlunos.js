@@ -87,7 +87,7 @@ export default function GerenciarAlunos() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
     padding: 20,
   },
   user: {
@@ -98,34 +98,35 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 15,
     marginBottom: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#F9F9F9',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   },
   userImage: {
     marginRight: 10,
     padding: 5,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: '#000',
   },
   image: {
     width: 100,
     height: 100,
-    borderRadius: 50,
+    borderRadius: 100,
+    borderWidth: 3,
+    borderColor: '#FFDE59',
   },
   userInfo: {
     flex: 1,
   },
   userName: {
     fontSize: 18,
-    color: '#808080',
+    fontWeight: "bold",
+    color: "rgba(34, 0, 0, 0.533333)",
     marginBottom: 5,
   },
   userLabel: {
     fontWeight: 'bold',
-    fontSize: 14,
-    color: 'black',
+    fontSize: 12,
+    color: "#595D60",
     marginBottom: 5,
+    textTransform: "uppercase",
   },
   desvincularButton: {
     backgroundColor: 'red',

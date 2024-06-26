@@ -94,24 +94,22 @@ const LocationScreen = ({ route, navigation }) => {
         color={isSharingLocation ? "red" : "green"}
       />
       <View style={styles.tabBar}>
-        <TouchableOpacity
-          style={styles.highlightedTabButton}
-          //onPress={() => navigation.navigate("LocationScreen")}
-        >
-          <View style={styles.tabButton}>
-            <Icon name="map-pin" size={24} color="#000" />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
-          <Icon name="home" size={24} color="#000" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.tabButton}
-          onPress={() => navigation.navigate("EditProfile")}
-        >
-          <Icon name="cog" size={24} color="#000" />
-        </TouchableOpacity>
-      </View>
+      {/* ... (seus botões existentes para mapa e home) */}
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('LocationScreen')}>
+        <View style={styles.highlightedTabButton}>
+          <Icon name="map-pin" size={24} color="#000" />
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.tabButton}>
+        <Icon name="home" size={24} color="#000" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('GerenciarAlunos')}>
+        <Icon name="users" size={24} color="#000" />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.tabButton} onPress={() => navigation.navigate('ConfigProfileMotorista')}>
+        <Icon name="cog" size={24} color="#000" />
+      </TouchableOpacity>
+    </View>
     </View>
     
   );

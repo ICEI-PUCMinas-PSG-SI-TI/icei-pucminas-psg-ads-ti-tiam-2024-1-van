@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     paddingHorizontal: 15,
-    paddingVertical: 45,
+    paddingVertical: 30,
     backgroundColor: "#fff",
   },
   headerText: {
