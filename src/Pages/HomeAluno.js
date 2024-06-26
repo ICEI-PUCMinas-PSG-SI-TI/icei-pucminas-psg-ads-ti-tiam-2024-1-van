@@ -155,7 +155,7 @@ const HomeAluno = ({ route, navigation }) => {
 
         <TouchableOpacity
           style={styles.mapContainer}
-          onPress={() => navigation.navigate("LocationScreen")}
+          onPress={() => navigation.navigate("AlunoLocationScreen")}
         >
           <Image source={mapsvan} style={styles.map} />
         </TouchableOpacity>
@@ -235,7 +235,7 @@ const HomeAluno = ({ route, navigation }) => {
       <View style={styles.tabBar}>
         <TouchableOpacity
           style={styles.tabButton}
-          onPress={() => navigation.navigate("LocationScreen")}
+          onPress={() => navigation.navigate("AlunoLocationScreen")}
         >
           <View style={styles.tabButton}>
             <Icon name="map-pin" size={24} color="#000" />

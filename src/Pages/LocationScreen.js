@@ -3,7 +3,7 @@ import { View, StyleSheet, ActivityIndicator, Text, Image, Button } from 'react-
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { getAuth } from 'firebase/auth';
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import { doc, getFirestore, updateDoc, getDoc } from 'firebase/firestore';
 
 const LocationScreen = () => {
   const [location, setLocation] = useState(null);
@@ -15,14 +15,27 @@ const LocationScreen = () => {
   const db = getFirestore();
 
   useEffect(() => {
-    return () => locationSubscription?.remove();  // Cleanup location watcher on unmount
+    const fetchUserInfo = async () => {
+      if (auth.currentUser) {
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        const userSnapshot = await getDoc(userRef);
+        if (userSnapshot.exists()) {
+          setProfileUrl(userSnapshot.data().image);
+        } else {
+          console.log('No user data available');
+        }
+      }
+    };
+    fetchUserInfo();
+
+    return () => locationSubscription?.remove();
   }, [locationSubscription]);
 
   const toggleLocationSharing = async () => {
     if (isSharingLocation) {
       locationSubscription?.remove();
       setIsSharingLocation(false);
-      setLocation(null);  // Optionally reset the location when stopping
+      setLocation(null);
     } else {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -32,7 +45,7 @@ const LocationScreen = () => {
 
       const subscription = await Location.watchPositionAsync({
         accuracy: Location.Accuracy.BestForNavigation,
-        timeInterval: 10000,  // Update interval in milliseconds
+        timeInterval: 10000,
       }, (locationUpdate) => {
         setLocation(locationUpdate.coords);
         updateDoc(doc(db, 'users', auth.currentUser.uid), {
@@ -51,21 +64,23 @@ const LocationScreen = () => {
       {location ? (
         <MapView
           style={styles.map}
-          region={{  // Changed from initialRegion to region for dynamic updates
+          region={{
             latitude: location.latitude,
             longitude: location.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
+            latitudeDelta: 0.00422,
+            longitudeDelta: 0.00421,
+          }}>
           <Marker
             coordinate={{ latitude: location.latitude, longitude: location.longitude }}
-            title="Your Location"
-            description="Here is your current location">
+            title="Your Location">
             {profileUrl ? (
-              <Image source={{ uri: profileUrl }} style={styles.profilePic} />
+              <Image
+                source={{ uri: profileUrl }}
+                style={styles.profilePic}
+                onError={() => console.log('Error loading image')}
+              />
             ) : (
-              <Text style={styles.noImageText}>No Image Available</Text>  // Text when no image
+              <Text>No Image Available</Text>
             )}
           </Marker>
         </MapView>
@@ -73,7 +88,7 @@ const LocationScreen = () => {
         <ActivityIndicator size="large" color="#0000ff" />
       )}
       <Button
-        title={isSharingLocation ? "Stop Sharing Location" : "Start Sharing Location"}
+        title={isSharingLocation ? "Interromper Compartilhamento" : "Iniciar Compartilhamento"}
         onPress={toggleLocationSharing}
         color={isSharingLocation ? "red" : "green"}
       />
@@ -84,22 +99,17 @@ const LocationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingTop: 50, // Espaço para a barra de navegação
   },
   map: {
     width: '100%',
-    height: '90%',  // Adjusted height to ensure button visibility
+    height: '85%', // Reduzir a altura para não sobrepor a barra de navegação
   },
   profilePic: {
-    width: 50,
-    height: 50,
+    width: 40, // Tamanho reduzido
+    height: 40, // Tamanho reduzido
+    borderRadius: 20, // Circular
   },
-  noImageText: {  // Style for text when no image is available
-    color: 'white',
-    padding: 10,
-    backgroundColor: 'rgba(0,0,0,0.5)'
-  }
 });
 
 export default LocationScreen;

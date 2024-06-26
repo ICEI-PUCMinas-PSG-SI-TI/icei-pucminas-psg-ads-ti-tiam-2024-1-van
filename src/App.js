@@ -3,6 +3,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import {
+  AlunoLocationScreen,
   LoginScreen,
   Signup,
   WelcomeScreen,
@@ -28,7 +29,7 @@ export default function App() {
         <Stack.Navigator initialRouteName="Welcome">
           <Stack.Screen
             name="Welcome"
-            component={LocationScreen}
+            component={WelcomeScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
@@ -89,6 +90,15 @@ export default function App() {
           <Stack.Screen
             name="SettingsScreen"
             component={SettingsScreen}
+            options={{
+              headerShown: true,
+              headerTransparent: true,
+              headerTitle: "",
+            }}
+          />
+          <Stack.Screen
+            name="AlunoLocationScreen"
+            component={AlunoLocationScreen}
             options={{
               headerShown: true,
               headerTransparent: true,

@@ -11,6 +11,7 @@ import EditProfile from './ConfigProfileAluno';
 import HomeMotorista from "./HomeMotorista";
 import GerenciarAlunos from './GerenciarAlunos';
 import ConfigProfileMotorista from './ConfigProfileMotorista'
+import AlunoLocationScreen from "./AlunoLocationScreen";
 
 export {
   LoginScreen,
@@ -21,6 +22,7 @@ export {
   HomeAluno,
   SettingsScreen,
   LocationScreen,
+  AlunoLocationScreen,
   EditScreen,
   EditProfile,
   HomeMotorista,
